@@ -27,6 +27,10 @@ export class Vector2 {
         return new Vector2(0, 0);
     }
 
+    get length(): number {
+        return Math.sqrt(Math.pow(this._x, 2) + Math.pow(this._y, 2));
+    }
+
     //------Public Methods------//
 
     public static copy(vector: Vector2) {
@@ -55,9 +59,31 @@ export class Vector2 {
         return this.addToX(vector.x).addToY(vector.y);
     }
 
-    public add(x : number, y: number): Vector2{
-        this.addToX(x);
-        this.addToY(y);
+    public add(vector: Vector2): Vector2 {
+        return new Vector2(this._x, this._y).addTo(vector);
+    }
+
+    public subtractTo(vector: Vector2): Vector2 {
+        this._x -= vector.x;
+        this._y -= vector.y;
         return this;
+    }
+
+    public subtract(vector: Vector2): Vector2 {
+        return new Vector2(this._x, this._y).subtractTo(vector);
+    }
+
+    public mult(v: number): Vector2 {
+        return new Vector2(this._x, this._y).multBy(v);
+    }
+
+    public multBy(v: number): Vector2 {
+        this._x *= v;
+        this._y *= v;
+        return this;
+    }
+
+    public dot(vector: Vector2): number {
+        return this._x * vector.x + this._y * vector.y;
     }
 }

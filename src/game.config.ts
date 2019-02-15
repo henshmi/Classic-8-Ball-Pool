@@ -26,10 +26,6 @@ export const GAME_CONFIG : any = {
     CUE_BALL_POSITION: { x: 413, y: 413 },
     EIGHT_BALL_POSITION: { x: 1090, y: 413 },
 
-    // ORIGINS
-    BALL_ORIGIN: { x: 25, y: 25 },
-    STICK_ORIGIN: { x: 970, y: 11 },
-
     // ASSETS
     SPRITES_BASE_PATH: 'assets/sprites/',
     SPRITES: {
@@ -66,12 +62,25 @@ export const GAME_CONFIG : any = {
     },
     AUDIO_BASE_PATH: 'assets/sounds/',
 
+    // PHYSICS
+    FRICTION: 0.0198,
+
+    // BALL
+    BALL_DIAMETER: 38,
+    BALL_ORIGIN: { x: 25, y: 25 },
+    BALL_MIN_VELOCITY_LENGTH: 0.05,
+
     // STICK
+    STICK_ORIGIN: { x: 970, y: 11 },
+    STICK_SHOT_ORIGIN: { x: 950, y: 11 },
     STICK_MOVEMENT_PER_FRAME: 2,
-    STICK_MAX_DISTANCE: 130,
+    STICK_MAX_POWER: 60,
 
     // KEYS
     SHOOT_MOUSE_BUTTON: 0,
     INCREASE_SHOT_POWER_KEY: 87,
     DECREASE_SHOT_POWER_KEY: 83,
+
+    // TIMING
+    TIMEOUT_TO_HIDE_STICK_AFTER_SHOT: 500
 };

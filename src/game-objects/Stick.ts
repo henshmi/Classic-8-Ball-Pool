@@ -11,14 +11,24 @@ export class Stick implements GameObject {
     private _sprite: HTMLImageElement;
     private _rotation: number;
     private _origin: Vector2;
-    private _distance: number = 0;
+    private _power: number = 0;
+    private _movable: boolean = true;
+    private _visible: boolean = true;
 
-    public get rotation() {
+    public get rotation(): number {
         return this._rotation;
     }
 
-    public get distance() {
-        return this._distance;
+    public get power(): number {
+        return this._power;
+    }
+
+    public set movable(value: boolean) {
+        this._movable = value;
+    }
+
+    public get visible(): boolean {
+        return this._visible;
     }
 
     constructor(private _position: Vector2) {
@@ -26,31 +36,31 @@ export class Stick implements GameObject {
         this._origin = Vector2.copy(GAME_CONFIG.STICK_ORIGIN);
     }
 
-    private increaseDistance(): void {
-        this._distance += GAME_CONFIG.STICK_MOVEMENT_PER_FRAME;
+    private increasePower(): void {
+        this._power++;
         this._origin.addToX(GAME_CONFIG.STICK_MOVEMENT_PER_FRAME);
     }
 
-    private decreaseDistance(): void {
-        this._distance -= GAME_CONFIG.STICK_MOVEMENT_PER_FRAME;
+    private decreasePower(): void {
+        this._power--;
         this._origin.addToX(-GAME_CONFIG.STICK_MOVEMENT_PER_FRAME);
     }
     
     private isLessThanMaxDistance(): boolean {
-        return this._distance < GAME_CONFIG.STICK_MAX_DISTANCE;
+        return this._power <= GAME_CONFIG.STICK_MAX_POWER;
     }
 
     private isMoreThanMinDistance(): boolean {
-        return this._distance >= 0;
+        return this._power >= 0;
     }
 
     private updateDistance(): void {
 
         if (Keyboard.isDown(GAME_CONFIG.INCREASE_SHOT_POWER_KEY) && this.isLessThanMaxDistance()) {
-            this.increaseDistance();
+            this.increasePower();
         }
         else if (Keyboard.isDown(GAME_CONFIG.DECREASE_SHOT_POWER_KEY) && this.isMoreThanMinDistance()) {
-            this.decreaseDistance();
+            this.decreasePower();
         }
     }
 
@@ -60,13 +70,33 @@ export class Stick implements GameObject {
         this._rotation = Math.atan2(opposite, adjacent);
     }
 
+    public hide(): void {
+        this._power = 0;
+        this._visible = false;
+    }
+
+    public shoot(): void {
+        this._origin = Vector2.copy(GAME_CONFIG.STICK_SHOT_ORIGIN);
+    }
+
+    public relocate(position: Vector2): void {
+        this._position = position;
+        this._origin = Vector2.copy(GAME_CONFIG.STICK_ORIGIN);
+        this._movable = true;
+        this._visible = true;
+    }
+
     public update(): void {
-        this.updateRotation();
-        this.updateDistance();
+        if(this._movable) {
+            this.updateRotation();
+            this.updateDistance();
+        }
     }
 
     public draw(): void {
-        Canvas2D.drawImage(this._sprite, this._position, this._rotation, this._origin);
+        if(this._visible) {
+            Canvas2D.drawImage(this._sprite, this._position, this._rotation, this._origin);
+        }
     }
 
 }
