@@ -1,0 +1,61 @@
+import { ButtonState } from './ButtonState';
+import { Canvas2D } from './../Canvas';
+import { Vector2 } from './../geom/Vector2';
+
+class Mouse_Singleton {
+
+    private _buttonStates: ButtonState[] = [];
+    private _position: Vector2;
+
+    public get posX() {
+        return this._position.x;
+    }
+
+    public get posY() {
+        return this._position.y;
+    }
+
+    constructor() {
+
+        for(let i = 0 ; i < 3 ; i ++ ) {
+            this._buttonStates[i] = new ButtonState();
+        }
+
+        this._position = Vector2.zero;
+
+        document.addEventListener('mousemove', (event) => this.handleMouseMove(event));
+        document.addEventListener('mousedown', (event) => this.handleMouseDown(event));
+        document.addEventListener('mouseup', (event) => this.handleMouseUp(event));
+    }
+
+    private handleMouseMove(event: MouseEvent): void {
+        const mouseX: number = (event.pageX - Canvas2D.offsetX) / Canvas2D.scaleX;
+        const mouseY: number = (event.pageY - Canvas2D.offsetY) / Canvas2D.scaleY;
+        this._position = new Vector2(mouseX, mouseY);
+    }
+
+    private handleMouseDown(event: MouseEvent) {
+        this._buttonStates[event.button].down = true;
+        this._buttonStates[event.button].pressed = true;
+    }
+
+    private handleMouseUp(event: MouseEvent) {
+        this._buttonStates[event.button].down = false;
+    }
+
+    public reset() : void {
+        for(let i = 0 ; i < 3 ; i++ ) {
+            this._buttonStates[i].pressed = false;
+        }
+    }
+
+    public isDown(button: number): boolean {
+        return this._buttonStates[button].down;
+    }
+    
+    public isPressed(button: number): boolean {
+        return this._buttonStates[button].pressed;
+    }
+}
+
+export const Mouse = new Mouse_Singleton();

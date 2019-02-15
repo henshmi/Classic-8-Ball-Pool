@@ -1,0 +1,17 @@
+{
+  "name": "ts-8-ball",
+  "version": "1.0.0",
+  "description": "Classic Pool Game TypeScript Adaptation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chen Shmilovich",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.3",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3"
+  }
+}
