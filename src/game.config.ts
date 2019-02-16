@@ -67,7 +67,7 @@ export const GAME_CONFIG : any = {
     COLLISION_LOSS: 0.0208,
 
     // TABLE
-    CUSHION_WIDTH: 60,
+    CUSHION_WIDTH: 57,
     POCKET_RADIUS: 48,
     POCKETS_POSITIONS: [
         { x: 62, y: 62 },

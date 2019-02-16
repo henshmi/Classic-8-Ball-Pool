@@ -4,9 +4,8 @@ import { GAME_CONFIG } from './../game.config';
 import { Assets } from './../Assets';
 import { Canvas2D } from './../Canvas';
 import { Vector2 } from './../geom/Vector2';
-import { GameObject } from './GameObject';
 
-export class Stick implements GameObject {
+export class Stick {
 
     private _sprite: HTMLImageElement;
     private _rotation: number;
@@ -46,20 +45,20 @@ export class Stick implements GameObject {
         this._origin.addToX(-GAME_CONFIG.STICK_MOVEMENT_PER_FRAME);
     }
     
-    private isLessThanMaxDistance(): boolean {
+    private isLessThanMaxPower(): boolean {
         return this._power <= GAME_CONFIG.STICK_MAX_POWER;
     }
 
-    private isMoreThanMinDistance(): boolean {
+    private isMoreThanMinPower(): boolean {
         return this._power >= 0;
     }
 
-    private updateDistance(): void {
+    private updatePower(): void {
 
-        if (Keyboard.isDown(GAME_CONFIG.INCREASE_SHOT_POWER_KEY) && this.isLessThanMaxDistance()) {
+        if (Keyboard.isDown(GAME_CONFIG.INCREASE_SHOT_POWER_KEY) && this.isLessThanMaxPower()) {
             this.increasePower();
         }
-        else if (Keyboard.isDown(GAME_CONFIG.DECREASE_SHOT_POWER_KEY) && this.isMoreThanMinDistance()) {
+        else if (Keyboard.isDown(GAME_CONFIG.DECREASE_SHOT_POWER_KEY) && this.isMoreThanMinPower()) {
             this.decreasePower();
         }
     }
@@ -89,7 +88,7 @@ export class Stick implements GameObject {
     public update(): void {
         if(this._movable) {
             this.updateRotation();
-            this.updateDistance();
+            this.updatePower();
         }
     }
 

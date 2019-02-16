@@ -1,17 +1,21 @@
-import { GameObject } from './GameObject';
 import { GAME_CONFIG } from './../game.config';
 import { Canvas2D } from './../Canvas';
 import { Color } from './../common/Color';
 import { Vector2 } from './../geom/Vector2';
 import { Assets } from '../Assets';
 
-export class Ball implements GameObject {
+export class Ball {
 
+    private _color: Color;
     private _sprite: HTMLImageElement;
     private _velocity: Vector2 = Vector2.zero;
     private _moving: boolean = false;
     private _visible: boolean = true;
 
+
+    protected get nextPosition(): Vector2 {
+        return this._position.add(this._velocity.mult(1 - GAME_CONFIG.FRICTION));
+    }
 
     protected get velocity(): Vector2 {
         return this._velocity;
@@ -24,6 +28,10 @@ export class Ball implements GameObject {
     public get position(): Vector2 {
         return Vector2.copy(this._position);
     }
+
+    public get insidePocket(): boolean {
+        return !this._visible && !this.moving;
+    }
     
     public set position(value: Vector2) {
         this._position = value;
@@ -33,7 +41,12 @@ export class Ball implements GameObject {
         return this._moving;
     }
 
+    public get color() {
+        return this._color;
+    }
+
     constructor(private _position: Vector2, color: Color) {
+        this._color = color;
         this.resolveSprite(color);
     }
 
@@ -64,10 +77,8 @@ export class Ball implements GameObject {
 
         if(inPocket) {
             this._velocity = Vector2.zero;
-            setTimeout(() => {
-                this._moving = false;
-                this._visible = false;
-            }, GAME_CONFIG.TIMOUT_TO_HIDE_BALL_AFTER_POCKET);
+            this._moving = false;
+            this._visible = false;
         }
         
     }
@@ -75,33 +86,43 @@ export class Ball implements GameObject {
     private handleCollisionWithCushion(): void {
 
         const ballRadius: number = GAME_CONFIG.BALL_DIAMETER / 2;
-        const topBallEdge: number = this.position.y - ballRadius;
-        const leftBallEdge: number = this.position.x - ballRadius;
-        const rightBallEdge: number = this.position.x + ballRadius;
-        const bottomBallEdge: number = this.position.y + ballRadius;
+        const topBallEdge: number = this.nextPosition.y - ballRadius;
+        const leftBallEdge: number = this.nextPosition.x - ballRadius;
+        const rightBallEdge: number = this.nextPosition.x + ballRadius;
+        const bottomBallEdge: number = this.nextPosition.y + ballRadius;
+
+        let collided: boolean = false;
 
         if(topBallEdge <= GAME_CONFIG.CUSHION_WIDTH) {
             this._position.addToY(GAME_CONFIG.CUSHION_WIDTH - this._position.y + ballRadius);
             this.velocity = new Vector2(this.velocity.x, -this.velocity.y);
+            collided = true;
         }
         if(leftBallEdge <= GAME_CONFIG.CUSHION_WIDTH) {
             this._position.addToX(GAME_CONFIG.CUSHION_WIDTH - this._position.x + ballRadius);
             this.velocity = new Vector2(-this.velocity.x, this.velocity.y);
+            collided = true;
         }
         if(rightBallEdge >= GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH) {
             this._position.addToX(GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH - this._position.x - ballRadius);
             this.velocity = new Vector2(-this.velocity.x, this.velocity.y);
+            collided = true;
         }
         if(bottomBallEdge >= GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH) {
             this._position.addToY(GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH - this._position.y - ballRadius);
             this.velocity = new Vector2(this.velocity.x, -this.velocity.y);
+            collided = true;
+        }
+
+        if(collided) {
+            this._velocity.multBy(1 - GAME_CONFIG.COLLISION_LOSS);
         }
     }
 
-    public collideWithBall(ball: Ball): void {
+    public collideWithBall(ball: Ball): boolean {
 
         if(!this._visible || !ball._visible){
-            return;
+            return false;
         }
     
         // Find a normal vector
@@ -111,7 +132,7 @@ export class Ball implements GameObject {
         const dist: number = n.length;
     
         if(dist > GAME_CONFIG.BALL_DIAMETER){
-            return;
+            return false;
         }
     
         // Find minimum translation distance
@@ -148,11 +169,19 @@ export class Ball implements GameObject {
 
         this.velocity.multBy(1 - GAME_CONFIG.COLLISION_LOSS);
         ball.velocity = ball.velocity.mult(1 - GAME_CONFIG.COLLISION_LOSS);
+        
+        return true;
     }
 
     public shoot(power: number, angle: number): void {
         this._velocity = new Vector2(power * Math.cos(angle), power * Math.sin(angle));
         this._moving = true;
+    }
+
+    public relocate(position: Vector2): void {
+        this._position = position;
+        this._velocity = Vector2.zero;
+        this._visible = true;
     }
 
     public update(): void {
