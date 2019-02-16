@@ -37,12 +37,12 @@ export class Stick implements GameObject {
     }
 
     private increasePower(): void {
-        this._power++;
+        this._power += GAME_CONFIG.POWER_TO_ADD_PER_FRAME;
         this._origin.addToX(GAME_CONFIG.STICK_MOVEMENT_PER_FRAME);
     }
 
     private decreasePower(): void {
-        this._power--;
+        this._power -= GAME_CONFIG.POWER_TO_ADD_PER_FRAME;
         this._origin.addToX(-GAME_CONFIG.STICK_MOVEMENT_PER_FRAME);
     }
     

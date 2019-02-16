@@ -33,9 +33,11 @@ export class GameWorld implements GameObject {
             this._cueBall, 
             ...this._redBalls, 
             ... this._yellowBalls, 
-            this._8Ball].sort(() => {
-            return .5 - Math.random();
+            this._8Ball].sort((a: Ball, b: Ball) => {
+            return a.position.x - b.position.x;
         });;
+
+        console.log(this._balls);
     }
 
     private shootCueBall(): void {
@@ -54,8 +56,8 @@ export class GameWorld implements GameObject {
     }
 
     private handleCollisions(): void {
-        for(let i = 0 ; i < this._balls.length ; i++ ){    
-            for(let j = i + 1 ; j < this._balls.length ; j++ ){
+        for(let i = 0 ; i < this._balls.length ; i++ ){ 
+            for(let j = i+1 ; j < this._balls.length ; j++ ){
                 const firstBall = this._balls[i];
                 const secondBall = this._balls[j];
                 firstBall.collideWithBall(secondBall);

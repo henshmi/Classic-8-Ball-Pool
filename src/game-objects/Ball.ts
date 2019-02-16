@@ -57,6 +57,47 @@ export class Ball implements GameObject {
         }
     }
 
+    private handleBallInPocket(): void {
+
+        const inPocket: boolean = GAME_CONFIG.POCKETS_POSITIONS
+            .some((pocketPos: Vector2) => this._position.distFrom(pocketPos) <= GAME_CONFIG.POCKET_RADIUS);
+
+        if(inPocket) {
+            this._velocity = Vector2.zero;
+            setTimeout(() => {
+                this._moving = false;
+                this._visible = false;
+            }, GAME_CONFIG.TIMOUT_TO_HIDE_BALL_AFTER_POCKET);
+        }
+        
+    }
+
+    private handleCollisionWithCushion(): void {
+
+        const ballRadius: number = GAME_CONFIG.BALL_DIAMETER / 2;
+        const topBallEdge: number = this.position.y - ballRadius;
+        const leftBallEdge: number = this.position.x - ballRadius;
+        const rightBallEdge: number = this.position.x + ballRadius;
+        const bottomBallEdge: number = this.position.y + ballRadius;
+
+        if(topBallEdge <= GAME_CONFIG.CUSHION_WIDTH) {
+            this._position.addToY(GAME_CONFIG.CUSHION_WIDTH - this._position.y + ballRadius);
+            this.velocity = new Vector2(this.velocity.x, -this.velocity.y);
+        }
+        if(leftBallEdge <= GAME_CONFIG.CUSHION_WIDTH) {
+            this._position.addToX(GAME_CONFIG.CUSHION_WIDTH - this._position.x + ballRadius);
+            this.velocity = new Vector2(-this.velocity.x, this.velocity.y);
+        }
+        if(rightBallEdge >= GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH) {
+            this._position.addToX(GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH - this._position.x - ballRadius);
+            this.velocity = new Vector2(-this.velocity.x, this.velocity.y);
+        }
+        if(bottomBallEdge >= GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH) {
+            this._position.addToY(GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH - this._position.y - ballRadius);
+            this.velocity = new Vector2(this.velocity.x, -this.velocity.y);
+        }
+    }
+
     public collideWithBall(ball: Ball): void {
 
         if(!this._visible || !ball._visible){
@@ -77,8 +118,8 @@ export class Ball implements GameObject {
         const mtd = n.mult((GAME_CONFIG.BALL_DIAMETER - dist) / dist);
     
         // Push-pull balls apart
-        this._position.addTo(mtd.mult(1/2));
-        ball.position.subtractTo(mtd.mult(1/2));
+        this._position.addTo(mtd.mult(0.5));
+        ball.position = ball.position.subtract(mtd.mult(0.5));
     
         // Find unit normal vector
         const un = n.mult(1/n.length);
@@ -104,6 +145,9 @@ export class Ball implements GameObject {
     
         this._moving = true;
         ball._moving = true;
+
+        this.velocity.multBy(1 - GAME_CONFIG.COLLISION_LOSS);
+        ball.velocity = ball.velocity.mult(1 - GAME_CONFIG.COLLISION_LOSS);
     }
 
     public shoot(power: number, angle: number): void {
@@ -113,6 +157,8 @@ export class Ball implements GameObject {
 
     public update(): void {
         if(this._moving) {
+            this.handleBallInPocket();
+            this.handleCollisionWithCushion();
             this._velocity.multBy(1 - GAME_CONFIG.FRICTION);
             this._position.addTo(this._velocity);
 
@@ -124,6 +170,8 @@ export class Ball implements GameObject {
     }
 
     public draw(): void {
-        Canvas2D.drawImage(this._sprite, this._position, 0, GAME_CONFIG.BALL_ORIGIN);
+        if(this._visible){
+            Canvas2D.drawImage(this._sprite, this._position, 0, GAME_CONFIG.BALL_ORIGIN);
+        }
     }
 }

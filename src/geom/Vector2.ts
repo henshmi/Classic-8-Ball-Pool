@@ -86,4 +86,8 @@ export class Vector2 {
     public dot(vector: Vector2): number {
         return this._x * vector.x + this._y * vector.y;
     }
+
+    public distFrom(vector: Vector2): number {
+        return this.subtract(vector).length;
+    }
 }

@@ -63,7 +63,20 @@ export const GAME_CONFIG : any = {
     AUDIO_BASE_PATH: 'assets/sounds/',
 
     // PHYSICS
-    FRICTION: 0.0198,
+    FRICTION: 0.0208,
+    COLLISION_LOSS: 0.0208,
+
+    // TABLE
+    CUSHION_WIDTH: 60,
+    POCKET_RADIUS: 48,
+    POCKETS_POSITIONS: [
+        { x: 62, y: 62 },
+        { x: 750, y: 32 },
+        { x: 1435, y: 62 },
+        { x: 62, y: 762 },
+        { x: 750, y: 794 },
+        { x: 1435, y: 762 },
+    ],
 
     // BALL
     BALL_DIAMETER: 38,
@@ -73,8 +86,9 @@ export const GAME_CONFIG : any = {
     // STICK
     STICK_ORIGIN: { x: 970, y: 11 },
     STICK_SHOT_ORIGIN: { x: 950, y: 11 },
+    POWER_TO_ADD_PER_FRAME: 1,
     STICK_MOVEMENT_PER_FRAME: 2,
-    STICK_MAX_POWER: 60,
+    STICK_MAX_POWER: 70,
 
     // KEYS
     SHOOT_MOUSE_BUTTON: 0,
@@ -82,5 +96,6 @@ export const GAME_CONFIG : any = {
     DECREASE_SHOT_POWER_KEY: 83,
 
     // TIMING
-    TIMEOUT_TO_HIDE_STICK_AFTER_SHOT: 500
+    TIMEOUT_TO_HIDE_STICK_AFTER_SHOT: 500,
+    TIMOUT_TO_HIDE_BALL_AFTER_POCKET: 100,
 };
