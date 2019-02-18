@@ -15,7 +15,8 @@ export class Referee {
         }
 
         return player.color === collidedBallColor || 
-               (player.matchScore === 7 && collidedBallColor === Color.black); 
+               (player.matchScore === 7 && collidedBallColor === Color.black) ||
+               (player.matchScore === 8 && collidedBallColor === Color.black); 
     }
 
     private isValidPocketedBalls(player: Player, pocketedBalls: Ball[]): boolean {
