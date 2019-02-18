@@ -4,16 +4,25 @@ import { GAME_CONFIG } from './../game.config';
 import { Assets } from './../Assets';
 import { Canvas2D } from './../Canvas';
 import { Vector2 } from './../geom/Vector2';
+import { mapRange } from '../common/Helper';
 
 export class Stick {
 
-    private _sprite: HTMLImageElement;
-    private _rotation: number;
-    private _origin: Vector2;
+    //------Members------//
+
+    private _sprite: HTMLImageElement = Assets.getSprite(GAME_CONFIG.SPRITES.STICK);
+    private _rotation: number = 0;
+    private _origin: Vector2 = Vector2.copy(GAME_CONFIG.STICK_ORIGIN);
     private _power: number = 0;
     private _movable: boolean = true;
     private _visible: boolean = true;
 
+    //------Properties------//
+
+    public get position() : Vector2 {
+        return Vector2.copy(this._position);
+    }
+    
     public get rotation(): number {
         return this._rotation;
     }
@@ -30,10 +39,15 @@ export class Stick {
         return this._visible;
     }
 
-    constructor(private _position: Vector2) {
-        this._sprite = Assets.getSprite(GAME_CONFIG.SPRITES.STICK);
-        this._origin = Vector2.copy(GAME_CONFIG.STICK_ORIGIN);
+    public set visible(value: boolean) {
+        this._visible = value;
     }
+
+    //------Constructor------//
+
+    constructor(private _position: Vector2) {}
+
+    //------Private Methods------//
 
     private increasePower(): void {
         this._power += GAME_CONFIG.POWER_TO_ADD_PER_FRAME;
@@ -46,7 +60,7 @@ export class Stick {
     }
     
     private isLessThanMaxPower(): boolean {
-        return this._power <= GAME_CONFIG.STICK_MAX_POWER;
+        return this._power < GAME_CONFIG.STICK_MAX_POWER;
     }
 
     private isMoreThanMinPower(): boolean {
@@ -64,25 +78,30 @@ export class Stick {
     }
 
     private updateRotation(): void {
-        const opposite: number = Mouse.posY - this._position.y;
-        const adjacent: number = Mouse.posX - this._position.x;
+        const opposite: number = Mouse.position.y - this._position.y;
+        const adjacent: number = Mouse.position.x - this._position.x;
         this._rotation = Math.atan2(opposite, adjacent);
     }
+
+    //------Public Methods------//
 
     public hide(): void {
         this._power = 0;
         this._visible = false;
+        this._movable = false;
     }
 
-    public shoot(): void {
-        this._origin = Vector2.copy(GAME_CONFIG.STICK_SHOT_ORIGIN);
-    }
-
-    public relocate(position: Vector2): void {
+    public show(position: Vector2): void {
         this._position = position;
         this._origin = Vector2.copy(GAME_CONFIG.STICK_ORIGIN);
         this._movable = true;
         this._visible = true;
+    }
+
+    public shoot(): void {
+        this._origin = Vector2.copy(GAME_CONFIG.STICK_SHOT_ORIGIN);
+        const volume: number = mapRange(this._power, 0, GAME_CONFIG.STICK_MAX_POWER, 0, 1);
+        Assets.playSound(GAME_CONFIG.SOUNDS.STRIKE, volume);
     }
 
     public update(): void {

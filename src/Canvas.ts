@@ -8,11 +8,11 @@ class Canvas2D_Singleton {
     private _canvasContainer: HTMLElement;
     private _canvas : HTMLCanvasElement;
     private _context : CanvasRenderingContext2D;
-    private _dpi: number;
     private _scale: Vector2;
     private _offset: Vector2;
 
     //------Properties------//
+    
     public get scaleX() {
         return this._scale.x;
     }
@@ -71,7 +71,6 @@ class Canvas2D_Singleton {
         if (this._canvas.offsetParent) {
             this._offset = new Vector2(this._canvas.offsetLeft, this._canvas.offsetTop);
         }
-
     }
 
 
@@ -96,6 +95,7 @@ class Canvas2D_Singleton {
 
     public drawText(text: string, font:string, color: string, position: Vector2, textAlign: string = 'left'): void {
         this._context.save();
+        this._context.scale(this._scale.x, this._scale.y);
         this._context.fillStyle = color;
         this._context.font = font;
         this._context.textAlign = textAlign as CanvasTextAlign;

@@ -6,6 +6,7 @@ import { Mouse } from './input/Mouse';
 
 let poolGame: GameWorld;
 
+
 async function initGame(): Promise<void> {
     await Assets.loadGameAssets();
 

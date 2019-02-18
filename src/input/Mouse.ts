@@ -7,12 +7,8 @@ class Mouse_Singleton {
     private _buttonStates: ButtonState[] = [];
     private _position: Vector2;
 
-    public get posX() {
-        return this._position.x;
-    }
-
-    public get posY() {
-        return this._position.y;
+    public get position() {
+        return Vector2.copy(this._position);
     }
 
     constructor() {
