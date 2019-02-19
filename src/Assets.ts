@@ -24,9 +24,11 @@ class Assets_Singleton {
     }
 
     public playSound(key: string, volume: number): void {
-        const sound = this.getSound(key);
-        sound.volume = volume;
-        sound.play();
+        if(GAME_CONFIG.SOUND_ON) {
+            const sound = this.getSound(key);
+            sound.volume = volume;
+            sound.play();
+        }
     }
 
     private loadSprite(path: string): Promise<void> {

@@ -7,17 +7,18 @@ export class MenuButton {
 
     private _activeSprite: HTMLImageElement;
     private _hovered: boolean;
+    private _pressed: boolean;
 
     private set hovered(value: boolean) {
         this._hovered = value;
-        this._activeSprite = value ? this._spriteOnHover : this._sprite;
     }
 
     constructor(
         private _callback: () => void,
         private _position: Vector2, 
         private _sprite: HTMLImageElement, 
-        private _spriteOnHover: HTMLImageElement
+        private _spriteOnHover: HTMLImageElement,
+        private _spriteOnPressed: HTMLImageElement,
     ) {
         this._activeSprite = this._sprite;
     }
@@ -28,12 +29,13 @@ export class MenuButton {
                position.y > this._position.y &&
                position.y < this._position.y + this._sprite.height;
     }
-
-
     public handleInput() {
+
         this.hovered = this.isInsideButton(Mouse.position);
+        this._activeSprite = this.hovered ? this._spriteOnHover : this._sprite;
 
         if(this._hovered && Mouse.isPressed(GAME_CONFIG.SELECT_MOUSE_BUTTON)) {
+
             Canvas2D.changeCursor(GAME_CONFIG.DEFAULT_CURSOR);
             this._callback();
         }

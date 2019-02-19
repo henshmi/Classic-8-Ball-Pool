@@ -305,7 +305,7 @@ export class GameWorld {
                 GAME_CONFIG.OVERALL_SCORE_LABEL_FONT,
                 GAME_CONFIG.OVERALL_SCORE_LABEL_COLOR,
                 GAME_CONFIG.OVERALL_SCORE_LABELS_POSITIONS[i],
-                GAME_CONFIG.OVERALL_SCORE_LABELS_ALLIGNMENT
+                GAME_CONFIG.OVERALL_SCORE_LABELS_ALIGNMENT
                 );   
         }
     }

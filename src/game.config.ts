@@ -38,7 +38,7 @@ export const GAME_CONFIG : any = {
     ],
     OVERALL_SCORE_LABEL_FONT: '200px Impact',
     OVERALL_SCORE_LABEL_COLOR: '#126736',
-    OVERALL_SCORE_LABEL_ALLIGNMENT: 'top',
+    OVERALL_SCORE_LABEL_ALIGNMENT: 'top',
 
     // ASSETS
     SPRITES_BASE_PATH: 'assets/sprites/',
@@ -84,7 +84,7 @@ export const GAME_CONFIG : any = {
         // Bossa Antigua Kevin MacLeod (incompetech.com)
         // Licensed under Creative Commons: By Attribution 3.0 License
         // http://creativecommons.org/licenses/by/3.0/
-        //MUSIC: "Bossa Antigua.mp3"
+        MUSIC: "Bossa Antigua.mp3"
     },
 
     // PHYSICS
@@ -138,6 +138,22 @@ export const GAME_CONFIG : any = {
     LOADING_SCREEN_TIMEOUT: 5000,
 
     // MENU
+    MAIN_MENU_LABELS: [
+        {
+            text: 'Classic 8-Ball',
+            position: { x: 100, y: 100 },
+            font: '100px Bookman',
+            color: 'white',
+            alignment: 'left',
+        },
+        {
+            text: `© ${new Date().getFullYear()} Chen Shmilovich`,
+            position: { x: 1250, y: 800 },
+            font: '20px Bookman',
+            color: 'white',
+            alignment: 'left',
+        }
+    ],
     MAIN_MENU_BUTTONS: [
         { 
             action: MenuAction.PVP,
@@ -147,15 +163,25 @@ export const GAME_CONFIG : any = {
             spriteOnPressed: null 
         },
         { 
+            action: MenuAction.PVC,
             position: { x: 200, y: 400 },
             sprite: 'ONE_PLAYER_BUTTON', 
             spriteOnHover: 'ONE_PLAYER_BUTTON_HOVERED', 
             spriteOnPressed: null 
-        }
+        },
+        { 
+            action: MenuAction.ToggleSound,
+            position: { x: 1430, y: 10 },
+            sprite: 'MUTE_BUTTON', 
+            spriteOnHover: 'MUTE_BUTTON_HOVERED', 
+            spriteOnPressed: 'MUTE_BUTTON_PRESSED' 
+        },
     ],
     DEFAULT_CURSOR: 'default',
     BUTTON_CURSOR: 'pointer',
 
     // LOADING SCREEN
-    LOADING_SCREEN_IMAGE_POSITION: { x: 450, y: 112.5 }
+    LOADING_SCREEN_IMAGE_POSITION: { x: 450, y: 112.5 },
+
+    SOUND_ON: true,
 };

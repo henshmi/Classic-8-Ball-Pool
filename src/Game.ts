@@ -34,9 +34,22 @@ const pvp = () => {
     });
 }
 
+const pvc = () => {
+    loadingScreen().then(() => {
+        menu.active = false;
+        poolGame.initMatch();
+    });
+}
+
+const toggleSound = () => {
+    GAME_CONFIG.SOUND_ON = !GAME_CONFIG.SOUND_ON;
+}
+
 const initMenuActions = () => {
     menuActionsMap = new Map<MenuAction, () => void>();
     menuActionsMap.set(MenuAction.PVP, pvp);
+    menuActionsMap.set(MenuAction.PVC, pvc);
+    menuActionsMap.set(MenuAction.ToggleSound, toggleSound);
 }
 
 const initGame = async () => {
@@ -50,7 +63,7 @@ const initGame = async () => {
 }
 
 const handleInput = () => {
-    if (Keyboard.isPressed(GAME_CONFIG.BACK_TO_MENU_KEY)) {
+    if (!menu.active && Keyboard.isPressed(GAME_CONFIG.BACK_TO_MENU_KEY)) {
         menu.active = true;
     }
 }
