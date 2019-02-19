@@ -253,17 +253,11 @@ export class GameWorld {
         this.initMatch();
     }
 
-    private isGameOver(): boolean {
-        return !this._8Ball.visible || 
-               (!this._cueBall.visible && this.currentPlayer.matchScore === 7) ||
-               (!this._cueBall.visible && this.currentPlayer.matchScore === 8)
-    }
-
     private nextTurn(): void {
 
         const foul = !this._turnState.isValid;
 
-        if(this.isGameOver()){
+        if(this._referee.isGameOver(this.currentPlayer, this._cueBall, this._8Ball)){
             this.handleGameOver();
             return;
         }

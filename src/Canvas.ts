@@ -102,6 +102,10 @@ class Canvas2D_Singleton {
         this._context.fillText(text, position.x, position.y);
         this._context.restore();
     }
+
+    public changeCursor(cursor: string): void {
+        this._canvas.style.cursor = cursor;
+    }
 }
 
 const canvas : HTMLCanvasElement = document.getElementById('screen') as HTMLCanvasElement;

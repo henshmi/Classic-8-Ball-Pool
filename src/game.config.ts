@@ -1,3 +1,4 @@
+import { MenuAction } from './menu/MenuAction';
 export const GAME_CONFIG : any = {
 
     // SIZING
@@ -124,12 +125,37 @@ export const GAME_CONFIG : any = {
     STICK_MAX_POWER: 65,
 
     // KEYS
+    SELECT_MOUSE_BUTTON: 0,
     SHOOT_MOUSE_BUTTON: 0,
     PLACE_BALL_IN_HAND_MOUSE_BUTTON: 0,
     INCREASE_SHOT_POWER_KEY: 87,
     DECREASE_SHOT_POWER_KEY: 83,
+    BACK_TO_MENU_KEY: 27,
 
     // TIMING
     TIMEOUT_TO_HIDE_STICK_AFTER_SHOT: 500,
     TIMOUT_TO_HIDE_BALL_AFTER_POCKET: 100,
+    LOADING_SCREEN_TIMEOUT: 5000,
+
+    // MENU
+    MAIN_MENU_BUTTONS: [
+        { 
+            action: MenuAction.PVP,
+            position: { x: 200, y: 200 },
+            sprite: 'TWO_PLAYERS_BUTTON', 
+            spriteOnHover: 'TWO_PLAYERS_BUTTON_HOVERED', 
+            spriteOnPressed: null 
+        },
+        { 
+            position: { x: 200, y: 400 },
+            sprite: 'ONE_PLAYER_BUTTON', 
+            spriteOnHover: 'ONE_PLAYER_BUTTON_HOVERED', 
+            spriteOnPressed: null 
+        }
+    ],
+    DEFAULT_CURSOR: 'default',
+    BUTTON_CURSOR: 'pointer',
+
+    // LOADING SCREEN
+    LOADING_SCREEN_IMAGE_POSITION: { x: 450, y: 112.5 }
 };

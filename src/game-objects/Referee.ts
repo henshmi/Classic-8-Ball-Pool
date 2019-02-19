@@ -42,4 +42,10 @@ export class Referee {
         return this.isValidFirstTouch(player, state.firstCollidedBallColor) &&
                this.isValidPocketedBalls(player, state.pocketedBalls);
     }
+
+    public isGameOver(currentPlayer: Player, cueBall: Ball, eightBall: Ball): boolean {
+        return !eightBall.visible || 
+               (!cueBall.visible && currentPlayer.matchScore === 7) ||
+               (!cueBall.visible && currentPlayer.matchScore === 8)
+    }
 }

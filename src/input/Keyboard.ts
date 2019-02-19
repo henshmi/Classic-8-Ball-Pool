@@ -24,7 +24,7 @@ class Keyboard_Singleton {
     }
 
     private handleKeyDown(event: KeyboardEvent): void {
-        this._keyStates[event.keyCode].pressed = false;
+        this._keyStates[event.keyCode].pressed = true;
         this._keyStates[event.keyCode].down = true;
     }
 
