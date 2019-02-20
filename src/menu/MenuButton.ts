@@ -1,43 +1,46 @@
+import { IMenuCommand } from './commands/IMenuCommand';
 import { GAME_CONFIG } from './../game.config';
 import { Mouse } from './../input/Mouse';
 import { Canvas2D } from './../Canvas';
 import { Vector2 } from './../geom/Vector2';
+import { Assets } from '../Assets';
 
 export class MenuButton {
 
     private _activeSprite: HTMLImageElement;
     private _hovered: boolean;
-    private _pressed: boolean;
 
     private set hovered(value: boolean) {
         this._hovered = value;
     }
 
     constructor(
-        private _callback: () => void,
+        private _command: IMenuCommand,
+        private _value: any,
         private _position: Vector2, 
-        private _sprite: HTMLImageElement, 
-        private _spriteOnHover: HTMLImageElement,
-        private _spriteOnPressed: HTMLImageElement,
+        private _spriteKey: string, 
+        private _spriteOnHoverKey: string,
     ) {
-        this._activeSprite = this._sprite;
+        this._activeSprite = Assets.getSprite(GAME_CONFIG.SPRITES[this._spriteKey]);
     }
 
     private isInsideButton(position: Vector2) {
         return position.x > this._position.x &&
-               position.x < this._position.x + this._sprite.width &&
+               position.x < this._position.x + this._activeSprite.width &&
                position.y > this._position.y &&
-               position.y < this._position.y + this._sprite.height;
+               position.y < this._position.y + this._activeSprite.height;
     }
+    
     public handleInput() {
 
         this.hovered = this.isInsideButton(Mouse.position);
-        this._activeSprite = this.hovered ? this._spriteOnHover : this._sprite;
+        this._activeSprite = this._hovered ? 
+                             Assets.getSprite(GAME_CONFIG.SPRITES[this._spriteOnHoverKey]) : 
+                             Assets.getSprite(GAME_CONFIG.SPRITES[this._spriteKey]);
 
         if(this._hovered && Mouse.isPressed(GAME_CONFIG.SELECT_MOUSE_BUTTON)) {
-
             Canvas2D.changeCursor(GAME_CONFIG.DEFAULT_CURSOR);
-            this._callback();
+            this._command.execute(this._value);
         }
     }
 

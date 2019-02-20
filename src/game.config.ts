@@ -1,4 +1,4 @@
-import { MenuAction } from './menu/MenuAction';
+import { MenuActionType } from './menu/MenuActionType';
 export const GAME_CONFIG : any = {
 
     // SIZING
@@ -138,45 +138,81 @@ export const GAME_CONFIG : any = {
     LOADING_SCREEN_TIMEOUT: 5000,
 
     // MENU
-    MAIN_MENU_LABELS: [
-        {
-            text: 'Classic 8-Ball',
-            position: { x: 100, y: 100 },
-            font: '100px Bookman',
-            color: 'white',
-            alignment: 'left',
-        },
-        {
-            text: `© ${new Date().getFullYear()} Chen Shmilovich`,
-            position: { x: 1250, y: 800 },
-            font: '20px Bookman',
-            color: 'white',
-            alignment: 'left',
-        }
-    ],
-    MAIN_MENU_BUTTONS: [
-        { 
-            action: MenuAction.PVP,
-            position: { x: 200, y: 200 },
-            sprite: 'TWO_PLAYERS_BUTTON', 
-            spriteOnHover: 'TWO_PLAYERS_BUTTON_HOVERED', 
-            spriteOnPressed: null 
-        },
-        { 
-            action: MenuAction.PVC,
-            position: { x: 200, y: 400 },
-            sprite: 'ONE_PLAYER_BUTTON', 
-            spriteOnHover: 'ONE_PLAYER_BUTTON_HOVERED', 
-            spriteOnPressed: null 
-        },
-        { 
-            action: MenuAction.ToggleSound,
-            position: { x: 1430, y: 10 },
-            sprite: 'MUTE_BUTTON', 
-            spriteOnHover: 'MUTE_BUTTON_HOVERED', 
-            spriteOnPressed: 'MUTE_BUTTON_PRESSED' 
-        },
-    ],
+    MAIN_MENU_CONFIG : {
+        LABELS: [
+            {
+                text: 'Classic 8-Ball',
+                position: { x: 100, y: 100 },
+                font: '100px Bookman',
+                color: 'white',
+                alignment: 'left',
+            },
+            {
+                text: `© ${new Date().getFullYear()} Chen Shmilovich`,
+                position: { x: 1250, y: 800 },
+                font: '20px Bookman',
+                color: 'white',
+                alignment: 'left',
+            }
+        ],
+        BUTTONS: [
+            { 
+                action: MenuActionType.PVP,
+                position: { x: 200, y: 200 },
+                sprite: 'TWO_PLAYERS_BUTTON', 
+                spriteOnHover: 'TWO_PLAYERS_BUTTON_HOVERED', 
+            },
+            { 
+                action: MenuActionType.GoToSubMenu,
+                value: 0,
+                position: { x: 200, y: 400 },
+                sprite: 'ONE_PLAYER_BUTTON', 
+                spriteOnHover: 'ONE_PLAYER_BUTTON_HOVERED', 
+            },
+            { 
+                action: MenuActionType.ToggleSound,
+                position: { x: 1430, y: 10 },
+                sprite: 'MUTE_BUTTON', 
+                spriteOnHover: 'MUTE_BUTTON_HOVERED', 
+            },
+        ],
+        SUB_MENUS: [
+            {
+                LABELS: [
+                    {
+                        text: 'Choose Difficulty',
+                        position: { x: 100, y: 100 },
+                        font: '100px Bookman',
+                        color: 'white',
+                        alignment: 'left',
+                    },
+                    {
+                        text: `© ${new Date().getFullYear()} Chen Shmilovich`,
+                        position: { x: 1250, y: 800 },
+                        font: '20px Bookman',
+                        color: 'white',
+                        alignment: 'left',
+                    }
+                ],
+                BUTTONS: [
+                    {
+                        action: MenuActionType.GoToPreviousMenu,
+                        position: { x: 100, y: 150 },
+                        sprite: 'BACK_BUTTON', 
+                        spriteOnHover: 'BACK_BUTTON_HOVERED', 
+                    },
+                    { 
+                        action: MenuActionType.ToggleSound,
+                        position: { x: 1430, y: 10 },
+                        sprite: 'MUTE_BUTTON', 
+                        spriteOnHover: 'MUTE_BUTTON_HOVERED', 
+                    },
+                ],
+                SUB_MENUS: []
+            }
+        ]
+    },
+    
     DEFAULT_CURSOR: 'default',
     BUTTON_CURSOR: 'pointer',
 
