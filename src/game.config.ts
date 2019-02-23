@@ -1,5 +1,7 @@
-import { MenuActionType } from './menu/MenuActionType';
+import { MenuActionType } from './menu/menu-action-type';
 export const GAME_CONFIG : any = {
+
+    LOG: false,
 
     // SIZING
     GAME_WIDTH: 1500,
@@ -136,13 +138,14 @@ export const GAME_CONFIG : any = {
     TIMEOUT_TO_HIDE_STICK_AFTER_SHOT: 500,
     TIMOUT_TO_HIDE_BALL_AFTER_POCKET: 100,
     LOADING_SCREEN_TIMEOUT: 5000,
+    TIMEOUT_TO_LOAD_MENU: 100,
 
     // MENU
     MAIN_MENU_CONFIG : {
         LABELS: [
             {
                 text: 'Classic 8-Ball',
-                position: { x: 100, y: 100 },
+                position: { x: 200, y: 100 },
                 font: '100px Bookman',
                 color: 'white',
                 alignment: 'left',
@@ -181,8 +184,8 @@ export const GAME_CONFIG : any = {
                 LABELS: [
                     {
                         text: 'Choose Difficulty',
-                        position: { x: 100, y: 100 },
-                        font: '100px Bookman',
+                        position: { x: 200, y: 80 },
+                        font: '70px Bookman',
                         color: 'white',
                         alignment: 'left',
                     },
@@ -200,6 +203,34 @@ export const GAME_CONFIG : any = {
                         position: { x: 100, y: 150 },
                         sprite: 'BACK_BUTTON', 
                         spriteOnHover: 'BACK_BUTTON_HOVERED', 
+                    },
+                    {
+                        action: MenuActionType.PVC,
+                        position: { x: 200, y: 150 },
+                        value: 30,
+                        sprite: 'EASY_BUTTON',
+                        spriteOnHover: 'EASY_BUTTON_HOVERED'
+                    },
+                    {
+                        action: MenuActionType.PVC,
+                        position: { x: 200, y: 300 },
+                        value: 50,
+                        sprite: 'MEDIUM_BUTTON',
+                        spriteOnHover: 'MEDIUM_BUTTON_HOVERED'
+                    },
+                    {
+                        action: MenuActionType.PVC,
+                        position: { x: 200, y: 450 },
+                        value: 100,
+                        sprite: 'HARD_BUTTON',
+                        spriteOnHover: 'HARD_BUTTON_HOVERED'
+                    },
+                    {
+                        action: MenuActionType.PVC,
+                        position: { x: 200, y: 600 },
+                        value: 700,
+                        sprite: 'INSANE_BUTTON',
+                        spriteOnHover: 'INSANE_BUTTON_HOVERED'
                     },
                     { 
                         action: MenuActionType.ToggleSound,
@@ -220,4 +251,18 @@ export const GAME_CONFIG : any = {
     LOADING_SCREEN_IMAGE_POSITION: { x: 450, y: 112.5 },
 
     SOUND_ON: true,
+
+    // AI
+    AI_ON: true,
+    AI_TRAIN_ITERATIONS: 30,
+    AI_PLAYER_INDEX: 1,
+    AI_BALL_DISTANCE_BONUS: 1/5800,
+    AI_VALID_TURN_BONUS: 5000,
+    AI_POCKETED_BALLS_BONUS: 2000,
+    AI_INVLID_TURN_PENALTY: 3000,
+    AI_GAME_WON_BONUS: 50000,
+    AI_GAME_LOSS_PENALTY: 50000,
+    AI_SHOT_POWER_MUTATION_VARIANCE: 15,
+    AI_MIN_SHOT_POWER: 10,
+    
 };

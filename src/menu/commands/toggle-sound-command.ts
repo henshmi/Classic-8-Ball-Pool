@@ -1,4 +1,4 @@
-import { IMenuCommand } from './IMenuCommand';
+import { IMenuCommand } from './menu-command';
 import { GAME_CONFIG } from '../../game.config';
 
 export class ToggleSoundCommand implements IMenuCommand {

@@ -1,6 +1,6 @@
-import { ButtonState } from './ButtonState';
-import { Canvas2D } from './../Canvas';
-import { Vector2 } from './../geom/Vector2';
+import { ButtonState } from './button-state';
+import { Canvas2D } from '../canvas';
+import { Vector2 } from '../geom/vector2';
 
 class Mouse_Singleton {
 

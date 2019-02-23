@@ -1,8 +1,8 @@
-import { GAME_CONFIG } from './../game.config';
-import { Canvas2D } from './../Canvas';
-import { Color } from './../common/Color';
-import { Vector2 } from './../geom/Vector2';
-import { Assets } from '../Assets';
+import { GAME_CONFIG } from '../game.config';
+import { Canvas2D } from '../canvas';
+import { Color } from '../common/color';
+import { Vector2 } from '../geom/vector2';
+import { Assets } from '../assets';
 
 export class Ball {
 

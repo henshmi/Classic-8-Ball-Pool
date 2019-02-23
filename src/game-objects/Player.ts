@@ -1,6 +1,6 @@
-import { GAME_CONFIG } from './../game.config';
-import { Color } from './../common/Color';
-import { Canvas2D } from '../Canvas';
+import { GAME_CONFIG } from '../game.config';
+import { Color } from '../common/color';
+import { Canvas2D } from '../canvas';
 
 export class Player {
 

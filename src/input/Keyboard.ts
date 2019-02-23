@@ -1,4 +1,4 @@
-import { ButtonState } from './ButtonState';
+import { ButtonState } from './button-state';
 
 class Keyboard_Singleton {
 

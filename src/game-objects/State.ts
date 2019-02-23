@@ -1,5 +1,5 @@
-import { Ball } from './Ball';
-import { Color } from "../common/Color";
+import { Ball } from './ball';
+import { Color } from "../common/color";
 
 export class State {
     public firstCollidedBallColor: Color;

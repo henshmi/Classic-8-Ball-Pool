@@ -2,7 +2,6 @@ const path = require('path');
 
 module.exports = {
   entry: './src/Game.ts',
-  devtool: 'inline-source-map',
   mode: 'production',
   module: {
     rules: [

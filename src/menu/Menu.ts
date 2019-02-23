@@ -1,10 +1,10 @@
-import { IMenuCommand } from './commands/IMenuCommand';
-import { MenuButton } from './MenuButton';
-import { Assets } from '../Assets';
-import { Canvas2D } from '../Canvas';
+import { IMenuCommand } from './commands/menu-command';
+import { MenuButton } from './menu-button';
+import { Assets } from '../assets';
+import { Canvas2D } from '../canvas';
 import { GAME_CONFIG } from '../game.config';
-import { MenuActionType } from './MenuActionType';
-import { MenuLabel } from './MenuLabel';
+import { MenuActionType } from './menu-action-type';
+import { MenuLabel } from './menu-label';
 
 export class Menu {
 

@@ -1,40 +1,62 @@
-import { mapRange } from './../common/Helper';
-import { Referee } from './Referee';
-import { Player } from './Player';
-import { Stick } from './Stick';
-import { Color } from '../common/Color';
-import { Vector2 } from '../geom/Vector2';
+import { AI } from './../ai/ai-trainer';
+import { mapRange } from '../common/helper';
+import { Referee } from './referee';
+import { Player } from './player';
+import { Stick } from './stick';
+import { Color } from '../common/color';
+import { Vector2 } from '../geom/vector2';
 import { GAME_CONFIG } from '../game.config';
-import { Assets } from '../Assets';
-import { Canvas2D } from '../Canvas';
-import { Ball } from './Ball';
-import { Mouse } from '../input/Mouse';
-import { State } from './State';
+import { Assets } from '../assets';
+import { Canvas2D } from '../canvas';
+import { Ball } from './ball';
+import { Mouse } from '../input/mouse';
+import { State } from './state';
 
 export class GameWorld {
 
     //------Members------//
 
-    _stick: Stick;
-    _cueBall: Ball;
-    _8Ball: Ball;
-    _balls: Ball[];
-    _players: Player[] = [
-        new Player(),
-        new Player(),
-    ];
-    _currentPlayerIndex = 0;
-    _turnState: State;
-    _referee: Referee;
+    private _stick: Stick;
+    private _cueBall: Ball;
+    private _8Ball: Ball;
+    private _balls: Ball[];
+    private _players: Player[] = [new Player(), new Player()];
+    private _currentPlayerIndex = 0;
+    private _turnState: State;
+    private _referee: Referee;
 
     //------Properties------//
 
-    private get currentPlayer(): Player {
+    public get currentPlayer(): Player {
         return this._players[this._currentPlayerIndex];
     }
 
-    private get nextPlayer(): Player {
+    public get nextPlayer(): Player {
         return this._players[(this._currentPlayerIndex + 1) % this._players.length];
+    }
+
+    public get balls(): Ball[] {
+        return this._balls
+    }
+
+    public get isBallInHand(): boolean {
+        return this._turnState.ballInHand;
+    }
+
+    public get isTurnValid(): boolean {
+        return this._turnState.isValid;
+    }
+
+    public get isGameOver(): boolean {
+        return this._referee.isGameOver(this.currentPlayer, this._cueBall, this._8Ball);
+    }
+
+    public get isBallsMoving(): boolean {
+        return this._balls.some(ball => ball.moving);
+    }
+
+    public get numOfPocketedBallsOnTurn(): number {
+        return this._turnState.pocketedBalls.length;
     }
 
     //------Constructor------//
@@ -49,49 +71,70 @@ export class GameWorld {
         return this._balls.filter((ball: Ball) => ball.color === color);
     }
 
-    private shootCueBall(): void {
-        if(this._stick.power > 0) {
-            this._stick.shoot();
-            this._cueBall.shoot(this._stick.power, this._stick.rotation);
-            this._stick.movable = false;
-            setTimeout(() => this._stick.hide(), GAME_CONFIG.TIMEOUT_TO_HIDE_STICK_AFTER_SHOT);
+    private handleInput(): void {
+        if (AI.finishedSession && Mouse.isPressed(GAME_CONFIG.SHOOT_MOUSE_BUTTON)) {
+            this.shootCueBall(this._stick.power, this._stick.rotation);
         }
     }
 
-    private handleInput(): void {
-        if (Mouse.isPressed(GAME_CONFIG.SHOOT_MOUSE_BUTTON)) {
-            this.shootCueBall();
-        }
+    private isBallPosOutsideTopBorder(position: Vector2): boolean {
+        const topBallEdge: number = position.y - GAME_CONFIG.BALL_DIAMETER / 2;
+        return topBallEdge <= GAME_CONFIG.CUSHION_WIDTH;
+    }
+
+    private isBallPosOutsideLeftBorder(position: Vector2): boolean {
+        const leftBallEdge: number = position.x - GAME_CONFIG.BALL_DIAMETER / 2;
+        return leftBallEdge <= GAME_CONFIG.CUSHION_WIDTH;
+    }
+
+    private isBallPosOutsideRightBorder(position: Vector2): boolean {
+        const rightBallEdge: number = position.x + GAME_CONFIG.BALL_DIAMETER / 2;
+        return rightBallEdge >= GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH;
+    }
+
+    private isBallPosOutsideBottomBorder(position: Vector2): boolean {
+        const bottomBallEdge: number = position.y + GAME_CONFIG.BALL_DIAMETER / 2;
+        return bottomBallEdge >= GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH;
+    }
+
+    private handleCollisionWithTopCushion(ball: Ball): void {
+        ball.position = ball.position.addY(GAME_CONFIG.CUSHION_WIDTH - ball.position.y + GAME_CONFIG.BALL_DIAMETER / 2);
+        ball.velocity = new Vector2(ball.velocity.x, -ball.velocity.y);
+    }
+
+    private handleCollisionWithLeftCushion(ball: Ball): void {
+        ball.position = ball.position.addX(GAME_CONFIG.CUSHION_WIDTH - ball.position.x + GAME_CONFIG.BALL_DIAMETER / 2);
+        ball.velocity = new Vector2(-ball.velocity.x, ball.velocity.y);
+    }
+
+    private handleCollisionWithRightCushion(ball: Ball): void {
+        ball.position = ball.position.addX(GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH - ball.position.x - GAME_CONFIG.BALL_DIAMETER / 2);
+        ball.velocity = new Vector2(-ball.velocity.x, ball.velocity.y);
+    }
+
+    private handleCollisionWithBottomCushion(ball: Ball): void {
+        ball.position = ball.position.addY(GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH - ball.position.y - GAME_CONFIG.BALL_DIAMETER / 2);
+        ball.velocity = new Vector2(ball.velocity.x, -ball.velocity.y);
     }
 
     private resolveBallCollisionWithCushion(ball: Ball): void {
 
-        const ballRadius: number = GAME_CONFIG.BALL_DIAMETER / 2;
-        const topBallEdge: number = ball.nextPosition.y - ballRadius;
-        const leftBallEdge: number = ball.nextPosition.x - ballRadius;
-        const rightBallEdge: number = ball.nextPosition.x + ballRadius;
-        const bottomBallEdge: number = ball.nextPosition.y + ballRadius;
-
         let collided: boolean = false;
 
-        if(topBallEdge <= GAME_CONFIG.CUSHION_WIDTH) {
-            ball.position = ball.position.addY(GAME_CONFIG.CUSHION_WIDTH - ball.position.y + ballRadius);
-            ball.velocity = new Vector2(ball.velocity.x, -ball.velocity.y);
+        if(this.isBallPosOutsideTopBorder(ball.nextPosition)) {
+            this.handleCollisionWithTopCushion(ball);
             collided = true;
         }
-        if(leftBallEdge <= GAME_CONFIG.CUSHION_WIDTH) {
-            ball.position = ball.position.addX(GAME_CONFIG.CUSHION_WIDTH - ball.position.x + ballRadius);
-            ball.velocity = new Vector2(-ball.velocity.x, ball.velocity.y);
+        if(this.isBallPosOutsideLeftBorder(ball.nextPosition)) {
+            this.handleCollisionWithLeftCushion(ball);
             collided = true;
         }
-        if(rightBallEdge >= GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH) {
-            ball.position = ball.position.addX(GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH - ball.position.x - ballRadius);
-            ball.velocity = new Vector2(-ball.velocity.x, ball.velocity.y);
+        if(this.isBallPosOutsideRightBorder(ball.nextPosition)) {
+            this.handleCollisionWithRightCushion(ball);
             collided = true;
         }
-        if(bottomBallEdge >= GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH) {
-            ball.position = ball.position.addY(GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH - ball.position.y - ballRadius);
-            ball.velocity = new Vector2(ball.velocity.x, -ball.velocity.y);
+        if(this.isBallPosOutsideBottomBorder(ball.nextPosition)) {
+            this.handleCollisionWithBottomCushion(ball);
             collided = true;
         }
 
@@ -208,39 +251,14 @@ export class GameWorld {
 
     private handleBallInHand(): void {
 
-        if(Mouse.isPressed(GAME_CONFIG.PLACE_BALL_IN_HAND_MOUSE_BUTTON)) {
-            this._turnState.ballInHand = false;
-            this._stick.show(this._cueBall.position);
+        if(Mouse.isPressed(GAME_CONFIG.PLACE_BALL_IN_HAND_MOUSE_BUTTON) && this.isValidPosToPlaceCueBall(Mouse.position)) {
+            this.placeBallInHand(Mouse.position);
         }
         else {
             this._stick.movable = false;
             this._stick.visible = false;
             this._cueBall.position = Mouse.position;
         }
-    }
-
-    private ballsMoving(): boolean {
-        return this._balls.some(ball => ball.moving);
-    }
-
-    private concludeTurn(): void {
-
-        this._turnState.pocketedBalls.forEach((ball: Ball) => {
-            const ballIndex: number = this._balls.indexOf(ball);
-            if(ball.color != Color.white) {
-                this._balls.splice(ballIndex, 1);
-            }
-        });
-        
-        if(this.currentPlayer.color) {
-            this.currentPlayer.matchScore = 8 - this.getBallsByColor(this.currentPlayer.color).length - this.getBallsByColor(Color.black).length;
-        }
-
-        if(this.nextPlayer.color) {
-            this.nextPlayer.matchScore = 8 - this.getBallsByColor(this.nextPlayer.color).length - this.getBallsByColor(Color.black).length;
-        }
-
-        this._turnState.isValid = this._referee.isValidTurn(this.currentPlayer, this._turnState);
     }
 
     private handleGameOver(): void {
@@ -257,7 +275,7 @@ export class GameWorld {
 
         const foul = !this._turnState.isValid;
 
-        if(this._referee.isGameOver(this.currentPlayer, this._cueBall, this._8Ball)){
+        if (this.isGameOver) {
             this.handleGameOver();
             return;
         }
@@ -275,6 +293,10 @@ export class GameWorld {
 
         this._turnState = new State();
         this._turnState.ballInHand = foul;
+
+        if (AI.finishedSession && GAME_CONFIG.AI_ON && this._currentPlayerIndex === GAME_CONFIG.AI_PLAYER_INDEX) {
+            AI.startSession(this);
+        }
     }
 
     private drawCurrentPlayerLabel(): void {
@@ -310,6 +332,16 @@ export class GameWorld {
         }
     }
 
+    private isInsideTableBoundaries(position: Vector2): boolean {
+        let insideTable: boolean =  !this.isInsidePocket(position);
+        insideTable = insideTable && !this.isBallPosOutsideTopBorder(position);
+        insideTable = insideTable && !this.isBallPosOutsideLeftBorder(position);
+        insideTable = insideTable && !this.isBallPosOutsideRightBorder(position);
+        insideTable = insideTable && !this.isBallPosOutsideBottomBorder(position);
+
+        return insideTable;
+    }
+
     //------Public Methods------//
 
     public initMatch(): void {
@@ -343,18 +375,65 @@ export class GameWorld {
         this._referee = new Referee();
     }
 
+    public isValidPosToPlaceCueBall(position: Vector2): boolean {
+        let noOverlap: boolean =  this._balls.every((ball: Ball) => {
+            return ball.color === Color.white || 
+                   ball.position.distFrom(position) > GAME_CONFIG.BALL_DIAMETER;
+        })
+
+        return noOverlap && this.isInsideTableBoundaries(position);
+    }
+
+    public placeBallInHand(position: Vector2): void {
+        this._cueBall.position = position;
+        this._turnState.ballInHand = false;
+        this._stick.show(this._cueBall.position);
+    }
+
+    public concludeTurn(): void {
+
+        this._turnState.pocketedBalls.forEach((ball: Ball) => {
+            const ballIndex: number = this._balls.indexOf(ball);
+            if(ball.color != Color.white) {
+                this._balls.splice(ballIndex, 1);
+            }
+        });
+        
+        if(this.currentPlayer.color) {
+            this.currentPlayer.matchScore = 8 - this.getBallsByColor(this.currentPlayer.color).length - this.getBallsByColor(Color.black).length;
+        }
+
+        if(this.nextPlayer.color) {
+            this.nextPlayer.matchScore = 8 - this.getBallsByColor(this.nextPlayer.color).length - this.getBallsByColor(Color.black).length;
+        }
+
+        this._turnState.isValid = this._referee.isValidTurn(this.currentPlayer, this._turnState);
+    }
+
+    public shootCueBall(power: number, rotation: number): void {
+        if(power > 0) {
+            this._stick.rotation = rotation;
+            this._stick.shoot();
+            this._cueBall.shoot(power, rotation);
+            this._stick.movable = false;
+            setTimeout(() => this._stick.hide(), GAME_CONFIG.TIMEOUT_TO_HIDE_STICK_AFTER_SHOT);
+        }
+    }
+
     public update(): void {
-        if(this._turnState.ballInHand) {
+
+        if(this.isBallInHand) {
             this.handleBallInHand();
             return;
         }
+
         this.handleBallsInPockets();
         this.handleCollisions();
         this.handleInput();
         this._stick.update();
         this._balls.forEach((ball: Ball) => ball.update());
 
-        if(!this.ballsMoving() && !this._stick.visible) {
+        if(!this.isBallsMoving && !this._stick.visible) {
             this.concludeTurn();
             this.nextTurn();
         }

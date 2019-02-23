@@ -1,5 +1,5 @@
-import { IMenuCommand } from './IMenuCommand';
-import { Game } from '../../Game';
+import { IMenuCommand } from './menu-command';
+import { Game } from '../../game';
 
 export class GoToPreviousMenuCommand implements IMenuCommand {
 

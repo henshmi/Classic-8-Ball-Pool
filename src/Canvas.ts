@@ -1,5 +1,5 @@
 import { GAME_CONFIG } from './game.config';
-import { Vector2 } from './geom/Vector2';
+import { Vector2 } from './geom/vector2';
 
 class Canvas2D_Singleton {
 

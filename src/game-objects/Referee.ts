@@ -1,7 +1,7 @@
-import { State } from './State';
-import { Color } from './../common/Color';
-import { Ball } from "./Ball";
-import { Player } from "./Player";
+import { State } from './state';
+import { Color } from '../common/color';
+import { Ball } from "./ball";
+import { Player } from "./player";
 
 export class Referee {
 

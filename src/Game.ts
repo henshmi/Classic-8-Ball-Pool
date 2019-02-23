@@ -1,17 +1,18 @@
-import { GoToPreviousMenuCommand } from './menu/commands/GoToPreviousMenuCommand';
-import { GoToSubMenuCommand } from './menu/commands/GoToSubMenuCommand';
-import { ToggleSoundCommand } from './menu/commands/ToggleSoundCommand';
-import { PVCCommand } from './menu/commands/PVCCommand';
-import { PVPCommand } from './menu/commands/PVPCommand';
-import { IMenuCommand } from './menu/commands/IMenuCommand';
+import { AI } from './ai/ai-trainer';
+import { GoToPreviousMenuCommand } from './menu/commands/go-to-previous-menu-command';
+import { GoToSubMenuCommand } from './menu/commands/go-to-sub-menu-command';
+import { ToggleSoundCommand } from './menu/commands/toggle-sound-command';
+import { PVCCommand } from './menu/commands/pvc-command';
+import { PVPCommand } from './menu/commands/pvp-command';
+import { IMenuCommand } from './menu/commands/menu-command';
 import { GAME_CONFIG } from './game.config';
-import { MenuActionType } from './menu/MenuActionType';
-import { Menu } from './menu/Menu';
-import { Assets } from './Assets';
-import { GameWorld } from './game-objects/GameWorld';
-import { Keyboard } from './input/Keyboard';
-import { Canvas2D } from './Canvas';
-import { Mouse } from './input/Mouse';
+import { MenuActionType } from './menu/menu-action-type';
+import { Menu } from './menu/menu';
+import { Assets } from './assets';
+import { GameWorld } from './game-objects/game-world';
+import { Keyboard } from './input/keyboard';
+import { Canvas2D } from './canvas';
+import { Mouse } from './input/mouse';
 
 export class Game {
     private _menuActionsMap: Map<MenuActionType, IMenuCommand>;
@@ -19,6 +20,7 @@ export class Game {
     private _menu: Menu = new Menu();
     private _poolGame: GameWorld;
     private _isLoading: boolean;
+    private _inGame: boolean;
 
     private initMenuActions(): void {
         this._menuActionsMap = new Map<MenuActionType, IMenuCommand>();
@@ -44,25 +46,30 @@ export class Game {
     }
 
     public goToSubMenu(index: number): void {
-        if(this._menu){
-            this._menu.active = false;
-            this._previousMenus.push(this._menu);
-        }
-        this._menu = this._menu.getSubMenu(index);
-        this._menu.active = true;
+        setTimeout(() => {
+            if(this._menu){
+                this._menu.active = false;
+                this._previousMenus.push(this._menu);
+            }
+            this._menu = this._menu.getSubMenu(index);
+            this._menu.active = true;   
+        }, GAME_CONFIG.TIMEOUT_TO_LOAD_SUB_MENU);
     }
     
     public goToPreviousMenu(): void {
         if(this._previousMenus.length > 0) {
-            this._menu.active = false;
-            this._menu = this._previousMenus.pop();
-            this._menu.active = true;
+            setTimeout(() => {
+                this._menu.active = false;
+                this._menu = this._previousMenus.pop();
+                this._menu.active = true; 
+            }, GAME_CONFIG.TIMEOUT_TO_LOAD_SUB_MENU);
         }
     }
 
     public start(): void {
         this.displayLoadingScreen().then(() => {
             this._menu.active = false;
+            this._inGame = true;
             this._poolGame = new GameWorld();
             this._poolGame.initMatch();
         });
@@ -84,9 +91,14 @@ export class Game {
     }
 
     private handleInput(): void {
-        if (!this._menu.active && Keyboard.isPressed(GAME_CONFIG.BACK_TO_MENU_KEY)) {
-            this.initMainMenu();
-            this._menu.active = true;
+        if(this._inGame && Keyboard.isPressed(GAME_CONFIG.BACK_TO_MENU_KEY)) {
+            if(this._menu.active) {
+                this._menu.active = false;
+            }
+            else {
+                this.initMainMenu();
+                this._menu.active = true;
+            }
         }
     }
 
@@ -100,8 +112,10 @@ export class Game {
 
     private draw(): void {
         if (this._isLoading) return;
-        Canvas2D.clear();
-        this._menu.active ? this._menu.draw() : this._poolGame.draw();
+        if(AI.finishedSession){
+            Canvas2D.clear();
+            this._menu.active ? this._menu.draw() : this._poolGame.draw();
+        }
     }
 
     private gameLoop(): void {

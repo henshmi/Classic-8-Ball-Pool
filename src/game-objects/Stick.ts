@@ -1,10 +1,10 @@
-import { Keyboard } from './../input/Keyboard';
-import { Mouse } from './../input/Mouse';
-import { GAME_CONFIG } from './../game.config';
-import { Assets } from './../Assets';
-import { Canvas2D } from './../Canvas';
-import { Vector2 } from './../geom/Vector2';
-import { mapRange } from '../common/Helper';
+import { Keyboard } from '../input/keyboard';
+import { Mouse } from '../input/mouse';
+import { GAME_CONFIG } from '../game.config';
+import { Assets } from '../assets';
+import { Canvas2D } from '../canvas';
+import { Vector2 } from '../geom/vector2';
+import { mapRange } from '../common/helper';
 
 export class Stick {
 
@@ -41,6 +41,10 @@ export class Stick {
 
     public set visible(value: boolean) {
         this._visible = value;
+    }
+
+    public set rotation(value: number) {
+        this._rotation = value;
     }
 
     //------Constructor------//

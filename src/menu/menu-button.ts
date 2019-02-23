@@ -1,9 +1,9 @@
-import { IMenuCommand } from './commands/IMenuCommand';
-import { GAME_CONFIG } from './../game.config';
-import { Mouse } from './../input/Mouse';
-import { Canvas2D } from './../Canvas';
-import { Vector2 } from './../geom/Vector2';
-import { Assets } from '../Assets';
+import { IMenuCommand } from './commands/menu-command';
+import { GAME_CONFIG } from '../game.config';
+import { Mouse } from '../input/mouse';
+import { Canvas2D } from '../canvas';
+import { Vector2 } from '../geom/vector2';
+import { Assets } from '../assets';
 
 export class MenuButton {
 

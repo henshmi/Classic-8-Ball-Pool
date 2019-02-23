@@ -1,5 +1,5 @@
-import { Canvas2D } from './../Canvas';
-import { Vector2 } from './../geom/Vector2';
+import { Canvas2D } from '../canvas';
+import { Vector2 } from '../geom/vector2';
 
 export class MenuLabel {
 
