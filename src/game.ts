@@ -15,6 +15,7 @@ import { Canvas2D } from './canvas';
 import { Mouse } from './input/mouse';
 
 export class Game {
+    
     private _menuActionsMap: Map<MenuActionType, IMenuCommand>;
     private _previousMenus: Menu[] = [];
     private _menu: Menu = new Menu();
