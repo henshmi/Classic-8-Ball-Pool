@@ -5,7 +5,7 @@ import { Player } from "./player";
 
 export class Referee {
 
-    private isValidFirstTouch(player: Player, collidedBallColor: Color): boolean {
+    private isValidFirstTouch(player: Player, collidedBallColor: Color, somePocketed: boolean): boolean {
 
         if(!collidedBallColor) {
             return false;
@@ -15,6 +15,7 @@ export class Referee {
         }
 
         return player.color === collidedBallColor || 
+               (player.matchScore === 1 && somePocketed && collidedBallColor !== Color.black) ||
                (player.matchScore === 7 && collidedBallColor === Color.black) ||
                (player.matchScore === 8 && collidedBallColor === Color.black); 
     }
@@ -39,7 +40,7 @@ export class Referee {
     }
     
     public isValidTurn(player: Player, state: State): boolean {
-        return this.isValidFirstTouch(player, state.firstCollidedBallColor) &&
+        return this.isValidFirstTouch(player, state.firstCollidedBallColor, state.pocketedBalls.length > 0) &&
                this.isValidPocketedBalls(player, state.pocketedBalls);
     }
 

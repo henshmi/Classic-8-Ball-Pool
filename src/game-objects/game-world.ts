@@ -294,7 +294,7 @@ export class GameWorld {
         this._turnState = new State();
         this._turnState.ballInHand = foul;
 
-        if (AI.finishedSession && GAME_CONFIG.AI_ON && this._currentPlayerIndex === GAME_CONFIG.AI_PLAYER_INDEX) {
+        if (this.isAITurn()) {
             AI.startSession(this);
         }
     }
@@ -327,7 +327,7 @@ export class GameWorld {
                 GAME_CONFIG.OVERALL_SCORE_LABEL_FONT,
                 GAME_CONFIG.OVERALL_SCORE_LABEL_COLOR,
                 GAME_CONFIG.OVERALL_SCORE_LABELS_POSITIONS[i],
-                GAME_CONFIG.OVERALL_SCORE_LABELS_ALIGNMENT
+                GAME_CONFIG.OVERALL_SCORE_LABEL_ALIGNMENT
                 );   
         }
     }
@@ -340,6 +340,10 @@ export class GameWorld {
         insideTable = insideTable && !this.isBallPosOutsideBottomBorder(position);
 
         return insideTable;
+    }
+
+    private isAITurn(): boolean {
+        return AI.finishedSession && GAME_CONFIG.AI_ON && this._currentPlayerIndex === GAME_CONFIG.AI_PLAYER_INDEX;
     }
 
     //------Public Methods------//
@@ -373,6 +377,10 @@ export class GameWorld {
         });
         this._turnState = new State();
         this._referee = new Referee();
+
+        if (this.isAITurn()) {
+            AI.startSession(this);
+        }
     }
 
     public isValidPosToPlaceCueBall(position: Vector2): boolean {

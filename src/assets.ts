@@ -11,8 +11,8 @@ class Assets_Singleton {
     }
 
     public async loadGameAssets(): Promise<void> {
-        await this.loadGameSprites();
         await this.loadGameSounds();
+        await this.loadGameSprites();
     }
 
     public getSprite(key: string): HTMLImageElement {
@@ -48,12 +48,12 @@ class Assets_Singleton {
     }
 
     private loadSound(path: string): Promise<void> {
-        const audio: HTMLAudioElement = new Audio();
+        const audio: HTMLAudioElement = new Audio(GAME_CONFIG.SOUNDS_BASE_PATH + path);
         this._sounds.set(path, audio);
+        audio.load();
 
         return new Promise(resolve => {
-            audio.src = GAME_CONFIG.SOUNDS_BASE_PATH + path;
-            resolve();
+            audio.onloadeddata = () => resolve();
         });
     }
 

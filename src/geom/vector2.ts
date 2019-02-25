@@ -1,3 +1,4 @@
+import { Position } from '../game.config.type';
 
 export class Vector2 {
 
@@ -33,7 +34,7 @@ export class Vector2 {
 
     //------Public Methods------//
 
-    public static copy(vector: Vector2) {
+    public static copy(vector: Vector2 | Position) {
         return new Vector2(vector.x, vector.y);
     }
 

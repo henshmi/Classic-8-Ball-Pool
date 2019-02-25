@@ -53,7 +53,7 @@ export class Game {
             }
             this._menu = this._menu.getSubMenu(index);
             this._menu.active = true;   
-        }, GAME_CONFIG.TIMEOUT_TO_LOAD_SUB_MENU);
+        }, GAME_CONFIG.TIMEOUT_TO_LOAD_SUBMENU);
     }
     
     public goToPreviousMenu(): void {
@@ -62,7 +62,7 @@ export class Game {
                 this._menu.active = false;
                 this._menu = this._previousMenus.pop();
                 this._menu.active = true; 
-            }, GAME_CONFIG.TIMEOUT_TO_LOAD_SUB_MENU);
+            }, GAME_CONFIG.TIMEOUT_TO_LOAD_SUBMENU);
         }
     }
 
@@ -130,3 +130,5 @@ export class Game {
 
 const game = new Game();
 game.init();
+
+               

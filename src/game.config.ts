@@ -1,7 +1,7 @@
 import { MenuActionType } from './menu/menu-action-type';
-export const GAME_CONFIG : any = {
+import { GameConfig } from './game.config.type';
 
-    LOG: false,
+export const GAME_CONFIG : GameConfig = {
 
     // SIZING
     GAME_WIDTH: 1500,
@@ -33,14 +33,6 @@ export const GAME_CONFIG : any = {
         { x: 932, y: 27 }
     ],
     MATCH_SCORE_MARGIN: 20,
-
-    OVERALL_SCORE_LABELS_POSITIONS: [
-        { x: 628, y: 460 },
-        { x: 778, y: 460 },
-    ],
-    OVERALL_SCORE_LABEL_FONT: '200px Impact',
-    OVERALL_SCORE_LABEL_COLOR: '#126736',
-    OVERALL_SCORE_LABEL_ALIGNMENT: 'top',
 
     // ASSETS
     SPRITES_BASE_PATH: 'assets/sprites/',
@@ -83,15 +75,11 @@ export const GAME_CONFIG : any = {
         BALLS_COLLIDE: "BallsCollide.wav",
         STRIKE: "Strike.wav",
         RAIL: "Hole.wav",
-        // Bossa Antigua Kevin MacLeod (incompetech.com)
-        // Licensed under Creative Commons: By Attribution 3.0 License
-        // http://creativecommons.org/licenses/by/3.0/
-        MUSIC: "Bossa Antigua.mp3"
     },
 
     // PHYSICS
-    FRICTION: 0.0208,
-    COLLISION_LOSS: 0.0208,
+    FRICTION: 0.0209,
+    COLLISION_LOSS: 0.0209,
 
     // TABLE
     CUSHION_WIDTH: 57,
@@ -112,6 +100,14 @@ export const GAME_CONFIG : any = {
     CURRENT_PLAYER_LABEL_FONT: '70px Impact',
     CURRENT_PLAYER_LABEL_ALIGNMENT: 'top',
 
+    OVERALL_SCORE_LABELS_POSITIONS: [
+        { x: 628, y: 460 },
+        { x: 778, y: 460 },
+    ],
+    OVERALL_SCORE_LABEL_FONT: '200px Impact',
+    OVERALL_SCORE_LABEL_COLOR: '#126736',
+    OVERALL_SCORE_LABEL_ALIGNMENT: 'top',
+
     // BALL
     BALL_DIAMETER: 38,
     BALL_ORIGIN: { x: 25, y: 25 },
@@ -124,7 +120,7 @@ export const GAME_CONFIG : any = {
     STICK_SHOT_ORIGIN: { x: 950, y: 11 },
     POWER_TO_ADD_PER_FRAME: 1,
     STICK_MOVEMENT_PER_FRAME: 2,
-    STICK_MAX_POWER: 65,
+    STICK_MAX_POWER: 50,
 
     // KEYS
     SELECT_MOUSE_BUTTON: 0,
@@ -138,7 +134,7 @@ export const GAME_CONFIG : any = {
     TIMEOUT_TO_HIDE_STICK_AFTER_SHOT: 500,
     TIMOUT_TO_HIDE_BALL_AFTER_POCKET: 100,
     LOADING_SCREEN_TIMEOUT: 5000,
-    TIMEOUT_TO_LOAD_MENU: 100,
+    TIMEOUT_TO_LOAD_SUBMENU: 100,
 
     // MENU
     MAIN_MENU_CONFIG : {
@@ -244,12 +240,14 @@ export const GAME_CONFIG : any = {
         ]
     },
     
+    // CURSOR
     DEFAULT_CURSOR: 'default',
     BUTTON_CURSOR: 'pointer',
 
     // LOADING SCREEN
     LOADING_SCREEN_IMAGE_POSITION: { x: 450, y: 112.5 },
 
+    // SOUND
     SOUND_ON: true,
 
     // AI
@@ -264,5 +262,4 @@ export const GAME_CONFIG : any = {
     AI_GAME_LOSS_PENALTY: 50000,
     AI_SHOT_POWER_MUTATION_VARIANCE: 15,
     AI_MIN_SHOT_POWER: 10,
-    
 };

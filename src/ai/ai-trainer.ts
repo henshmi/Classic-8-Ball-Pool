@@ -16,6 +16,7 @@ export class AITrainer {
     private _iteration: number = 0;
     private _finishedSession: boolean = true;
     private _bestOpponent: AIOpponent;
+    private _soundOnState: boolean;
 
     public get finishedSession() : boolean {
         return this._finishedSession;
@@ -25,17 +26,17 @@ export class AITrainer {
         this._policy = new AIPolicy();
     }
 
-    private placeBallInHand(): void {
+    private placeBallInHand(gameWorld: GameWorld): void {
+        debugger;
         
         let marginX = 5;
         let pos = Vector2.copy(GAME_CONFIG.CUE_BALL_POSITION);
 
-        while(!this._gameWorld.isValidPosToPlaceCueBall(pos)) {
-            console.log(pos);
+        while(!gameWorld.isValidPosToPlaceCueBall(pos)) {
             pos.addToX(marginX);
         }
 
-        this._gameWorld.placeBallInHand(pos);
+        gameWorld.placeBallInHand(pos);
     }
 
     private init(): void {
@@ -73,6 +74,7 @@ export class AITrainer {
     private train(): void {
 
         if(this._iteration === GAME_CONFIG.AI_TRAIN_ITERATIONS){
+            GAME_CONFIG.SOUND_ON = this._soundOnState;
             this.playTurn();
             this._finishedSession = true;
             return;
@@ -92,14 +94,6 @@ export class AITrainer {
 
         if(current.evaluation > this._bestOpponent.evaluation){
             this._bestOpponent = current;
-        }
-
-        if(GAME_CONFIG.LOG){
-            console.log('-------------'+new Number(this._iteration+1)+'--------------------');
-            console.log('Current evaluation: ' + this._currentOpponent.evaluation);
-            console.log('Current power: ' + this._currentOpponent.power);
-            console.log('Current rotation: ' + this._currentOpponent.rotation);
-            console.log('---------------------------------');
         }
 
         this._gameWorld = cloneDeep(this._initialGameWorld);
@@ -126,7 +120,6 @@ export class AITrainer {
     }
 
     public opponentTrainingLoop(): void {
-        GAME_CONFIG.SOUND_ON = false;
 
         while(!this._finishedSession){
             this.train();
@@ -138,14 +131,15 @@ export class AITrainer {
     }
 
     public startSession(gameWorld: GameWorld): void {
+        this._soundOnState = GAME_CONFIG.SOUND_ON;
+        GAME_CONFIG.SOUND_ON = false;
+        if(gameWorld.isBallInHand) {
+            this.placeBallInHand(gameWorld);
+        }
         this._initialGameWorld = gameWorld;
         this._gameWorld = cloneDeep(gameWorld);
         this.init();
         this._finishedSession = false;
-
-        if(this._gameWorld.isBallInHand) {
-            this.placeBallInHand();
-        }
 
         this.simulate();
         this.opponentTrainingLoop();
