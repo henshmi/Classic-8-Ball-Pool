@@ -9,7 +9,7 @@ A Typescript adaptation of [Classic Pool Game](https://github.com/henshmi/Classi
 > **_Joseph Ace Tigas_**, [steemit.com](https://steemit.com/steemhunt/@josephace135/classic-pool-game-an-open-source-web-based-classic-pool-game)  
 
   
-> Chen Shmilovich made a very nice looking pool game with JS and HTML5. Chen dives into how to center game images, how to position the mouse, and the mechanics of the pool stick.  
+> _Chen Shmilovich made a very nice looking pool game with JS and HTML5. Chen dives into how to center game images, how to position the mouse, and the mechanics of the pool stick._  
 > **_InsideDev_**, [inside.com](https://inside.com/campaigns/inside-dev-2018-05-12-6391/sections/building-games-with-js-and-html5-39955)
 
 
