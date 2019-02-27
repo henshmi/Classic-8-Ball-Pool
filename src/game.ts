@@ -21,12 +21,17 @@ const sprites: IAssetsConfig = GameConfig.sprites;
 const inputConfig: IInputConfig = GameConfig.input;
 
 export class Game {
+
+    //------Members------//
+
     private _menuActionsMap: Map<MenuActionType, IMenuCommand>;
     private _previousMenus: Menu[] = [];
     private _menu: Menu = new Menu();
     private _poolGame: GameWorld;
     private _isLoading: boolean;
     private _inGame: boolean;
+
+    //------Private Methods------//
 
     private initMenuActions(): void {
         this._menuActionsMap = new Map<MenuActionType, IMenuCommand>();
@@ -39,46 +44,6 @@ export class Game {
 
     private initMainMenu(): void {
         this._menu.init(this._menuActionsMap, GameConfig.mainMenu);
-    }
-
-    public async init(): Promise<void> {
-        await Assets.loadGameAssets();
-
-        this.initMenuActions();
-        this.initMainMenu();
-        this._menu.active = true;
-        this._poolGame = new GameWorld();
-        this.gameLoop();
-    }
-
-    public goToSubMenu(index: number): void {
-        setTimeout(() => {
-            if(this._menu){
-                this._menu.active = false;
-                this._previousMenus.push(this._menu);
-            }
-            this._menu = this._menu.getSubMenu(index);
-            this._menu.active = true;   
-        }, GameConfig.timeoutToLoadSubMenu);
-    }
-    
-    public goToPreviousMenu(): void {
-        if(this._previousMenus.length > 0) {
-            setTimeout(() => {
-                this._menu.active = false;
-                this._menu = this._previousMenus.pop();
-                this._menu.active = true; 
-            }, GameConfig.timeoutToLoadSubMenu);
-        }
-    }
-
-    public start(): void {
-        this.displayLoadingScreen().then(() => {
-            this._menu.active = false;
-            this._inGame = true;
-            this._poolGame = new GameWorld();
-            this._poolGame.initMatch();
-        });
     }
 
     private displayLoadingScreen(): Promise<void> {
@@ -132,6 +97,47 @@ export class Game {
         });
     }
 
+    //------Public Methods------//
+
+    public async init(): Promise<void> {
+        await Assets.loadGameAssets();
+
+        this.initMenuActions();
+        this.initMainMenu();
+        this._menu.active = true;
+        this._poolGame = new GameWorld();
+        this.gameLoop();
+    }
+
+    public goToSubMenu(index: number): void {
+        setTimeout(() => {
+            if(this._menu){
+                this._menu.active = false;
+                this._previousMenus.push(this._menu);
+            }
+            this._menu = this._menu.getSubMenu(index);
+            this._menu.active = true;   
+        }, GameConfig.timeoutToLoadSubMenu);
+    }
+    
+    public goToPreviousMenu(): void {
+        if(this._previousMenus.length > 0) {
+            setTimeout(() => {
+                this._menu.active = false;
+                this._menu = this._previousMenus.pop();
+                this._menu.active = true; 
+            }, GameConfig.timeoutToLoadSubMenu);
+        }
+    }
+
+    public start(): void {
+        this.displayLoadingScreen().then(() => {
+            this._menu.active = false;
+            this._inGame = true;
+            this._poolGame = new GameWorld();
+            this._poolGame.initMatch();
+        });
+    }
 }
 
 const game = new Game();
