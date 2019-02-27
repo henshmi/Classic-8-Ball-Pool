@@ -1,4 +1,4 @@
-<h1>Classic-Pool-Game</h1>
+<h1>Classic-8-Ball-Pool</h1>
 <small>© Chen Shmilovich - 2019.</small>
 <hr>
 
