@@ -119,8 +119,8 @@ export const GameConfig : IGameConfig = {
     },
 
     physics: {
-        friction: 0.0209,
-        collisionLoss: 0.0209,
+        friction: 0.018,
+        collisionLoss: 0.018,
     },
 
     table: {
@@ -140,15 +140,15 @@ export const GameConfig : IGameConfig = {
         diameter: 38,
         origin: { x: 25, y: 25 },
         minVelocityLength: 0.05,
-        maxExpectedVelocity: 200,
-        maxExpectedCollisionForce: 100
+        maxExpectedVelocity: 120,
+        maxExpectedCollisionForce: 70
     },
 
     stick: {
         origin: { x: 970, y: 11 },
         shotOrigin: { x: 950, y: 11 },
         powerToAddPerFrame: 1,
-        movementPerFrame: 2,
+        movementPerFrame: 3,
         maxPower: 50
     },
 
