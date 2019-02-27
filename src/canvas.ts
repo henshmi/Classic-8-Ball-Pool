@@ -1,5 +1,5 @@
-import { Position } from './game.config.type';
-import { GAME_CONFIG } from './game.config';
+import { IVector2 } from './game.config.type';
+import { GameConfig } from './game.config';
 import { Vector2 } from './geom/vector2';
 
 class Canvas2D_Singleton {
@@ -43,8 +43,8 @@ class Canvas2D_Singleton {
 
     public resizeCanvas(): void {
         
-        const originalCanvasWidth = GAME_CONFIG.GAME_WIDTH;
-        const originalCanvasHeight = GAME_CONFIG.GAME_HEIGHT;
+        const originalCanvasWidth = GameConfig.gameSize.x;
+        const originalCanvasHeight = GameConfig.gameSize.y;
         const widthToHeight: number = originalCanvasWidth / originalCanvasHeight;
 
         let newHeight: number = window.innerHeight;
@@ -81,9 +81,9 @@ class Canvas2D_Singleton {
 
     public drawImage(
             sprite: HTMLImageElement,
-            position: Vector2 | Position = { x: 0, y: 0 }, 
+            position: IVector2 = { x: 0, y: 0 }, 
             rotation: number = 0, 
-            origin: Vector2 | Position = { x: 0, y: 0 }
+            origin: IVector2 = { x: 0, y: 0 }
         ) {    
         this._context.save();
         this._context.scale(this._scale.x, this._scale.y);
@@ -94,7 +94,7 @@ class Canvas2D_Singleton {
     }
 
 
-    public drawText(text: string, font:string, color: string, position: Vector2 | Position, textAlign: string = 'left'): void {
+    public drawText(text: string, font:string, color: string, position: IVector2, textAlign: string = 'left'): void {
         this._context.save();
         this._context.scale(this._scale.x, this._scale.y);
         this._context.fillStyle = color;

@@ -1,13 +1,17 @@
-import { GAME_CONFIG } from './../../game.config';
+import { GameConfig } from './../../game.config';
 import { Game } from '../../game';
 import { IMenuCommand } from './menu-command';
 
 export class PVPCommand implements IMenuCommand {
+
+    //------Constructor------//
     
     constructor(private _game: Game) {}
     
-    execute(): void {
-        GAME_CONFIG.AI_ON = false;
+    //------Public Methods------//
+
+    public execute(): void {
+        GameConfig.ai.on = false;
         this._game.start();
     }
 

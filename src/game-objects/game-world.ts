@@ -1,3 +1,4 @@
+import { IInputConfig, IBallConfig, ITableConfig, IVector2, IPhysicsConfig, IAssetsConfig, ILabelsConfig, IMatchScoreConfig, IAIConfig } from './../game.config.type';
 import { AI } from './../ai/ai-trainer';
 import { mapRange } from '../common/helper';
 import { Referee } from './referee';
@@ -5,12 +6,25 @@ import { Player } from './player';
 import { Stick } from './stick';
 import { Color } from '../common/color';
 import { Vector2 } from '../geom/vector2';
-import { GAME_CONFIG } from '../game.config';
+import { GameConfig } from '../game.config';
 import { Assets } from '../assets';
 import { Canvas2D } from '../canvas';
 import { Ball } from './ball';
 import { Mouse } from '../input/mouse';
 import { State } from './state';
+
+//------Configurations------//
+
+const physicsConfig: IPhysicsConfig = GameConfig.physics;
+const inputConfig: IInputConfig = GameConfig.input;
+const ballConfig: IBallConfig = GameConfig.ball;
+const tableConfig: ITableConfig = GameConfig.table;
+const labelsConfig: ILabelsConfig = GameConfig.labels;
+const matchScoreConfig: IMatchScoreConfig = GameConfig.matchScore;
+const aiConfig: IAIConfig = GameConfig.ai;
+const gameSize: IVector2 = GameConfig.gameSize;
+const sprites: IAssetsConfig = GameConfig.sprites;
+const sounds: IAssetsConfig = GameConfig.sounds;
 
 export class GameWorld {
 
@@ -72,48 +86,48 @@ export class GameWorld {
     }
 
     private handleInput(): void {
-        if (AI.finishedSession && Mouse.isPressed(GAME_CONFIG.SHOOT_MOUSE_BUTTON)) {
+        if (AI.finishedSession && Mouse.isPressed(inputConfig.mouseShootButton)) {
             this.shootCueBall(this._stick.power, this._stick.rotation);
         }
     }
 
     private isBallPosOutsideTopBorder(position: Vector2): boolean {
-        const topBallEdge: number = position.y - GAME_CONFIG.BALL_DIAMETER / 2;
-        return topBallEdge <= GAME_CONFIG.CUSHION_WIDTH;
+        const topBallEdge: number = position.y - ballConfig.diameter / 2;
+        return topBallEdge <= tableConfig.cushionWidth;
     }
 
     private isBallPosOutsideLeftBorder(position: Vector2): boolean {
-        const leftBallEdge: number = position.x - GAME_CONFIG.BALL_DIAMETER / 2;
-        return leftBallEdge <= GAME_CONFIG.CUSHION_WIDTH;
+        const leftBallEdge: number = position.x - ballConfig.diameter / 2;
+        return leftBallEdge <= tableConfig.cushionWidth;
     }
 
     private isBallPosOutsideRightBorder(position: Vector2): boolean {
-        const rightBallEdge: number = position.x + GAME_CONFIG.BALL_DIAMETER / 2;
-        return rightBallEdge >= GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH;
+        const rightBallEdge: number = position.x + ballConfig.diameter / 2;
+        return rightBallEdge >= gameSize.x - tableConfig.cushionWidth;
     }
 
     private isBallPosOutsideBottomBorder(position: Vector2): boolean {
-        const bottomBallEdge: number = position.y + GAME_CONFIG.BALL_DIAMETER / 2;
-        return bottomBallEdge >= GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH;
+        const bottomBallEdge: number = position.y + ballConfig.diameter / 2;
+        return bottomBallEdge >= gameSize.y - tableConfig.cushionWidth;
     }
 
     private handleCollisionWithTopCushion(ball: Ball): void {
-        ball.position = ball.position.addY(GAME_CONFIG.CUSHION_WIDTH - ball.position.y + GAME_CONFIG.BALL_DIAMETER / 2);
+        ball.position = ball.position.addY(tableConfig.cushionWidth - ball.position.y + ballConfig.diameter / 2);
         ball.velocity = new Vector2(ball.velocity.x, -ball.velocity.y);
     }
 
     private handleCollisionWithLeftCushion(ball: Ball): void {
-        ball.position = ball.position.addX(GAME_CONFIG.CUSHION_WIDTH - ball.position.x + GAME_CONFIG.BALL_DIAMETER / 2);
+        ball.position = ball.position.addX(tableConfig.cushionWidth - ball.position.x + ballConfig.diameter / 2);
         ball.velocity = new Vector2(-ball.velocity.x, ball.velocity.y);
     }
 
     private handleCollisionWithRightCushion(ball: Ball): void {
-        ball.position = ball.position.addX(GAME_CONFIG.GAME_WIDTH - GAME_CONFIG.CUSHION_WIDTH - ball.position.x - GAME_CONFIG.BALL_DIAMETER / 2);
+        ball.position = ball.position.addX(gameSize.x - tableConfig.cushionWidth - ball.position.x - ballConfig.diameter / 2);
         ball.velocity = new Vector2(-ball.velocity.x, ball.velocity.y);
     }
 
     private handleCollisionWithBottomCushion(ball: Ball): void {
-        ball.position = ball.position.addY(GAME_CONFIG.GAME_HEIGHT - GAME_CONFIG.CUSHION_WIDTH - ball.position.y - GAME_CONFIG.BALL_DIAMETER / 2);
+        ball.position = ball.position.addY(gameSize.y - tableConfig.cushionWidth - ball.position.y - ballConfig.diameter / 2);
         ball.velocity = new Vector2(ball.velocity.x, -ball.velocity.y);
     }
 
@@ -139,7 +153,7 @@ export class GameWorld {
         }
 
         if(collided) {
-            ball.velocity = ball.velocity.mult(1 - GAME_CONFIG.COLLISION_LOSS);
+            ball.velocity = ball.velocity.mult(1 - physicsConfig.collisionLoss);
         }
     }
 
@@ -155,12 +169,12 @@ export class GameWorld {
         // Find distance
         const dist: number = n.length;
     
-        if(dist > GAME_CONFIG.BALL_DIAMETER){
+        if(dist > ballConfig.diameter){
             return false;
         }
     
         // Find minimum translation distance
-        const mtd = n.mult((GAME_CONFIG.BALL_DIAMETER - dist) / dist);
+        const mtd = n.mult((ballConfig.diameter - dist) / dist);
     
         // Push-pull balls apart
         first.position = first.position.add(mtd.mult(0.5));
@@ -188,8 +202,8 @@ export class GameWorld {
         first.velocity = v1nTag.add(v1tTag);
         second.velocity = v2nTag.add(v2tTag);
     
-        first.velocity = first.velocity.mult(1 - GAME_CONFIG.COLLISION_LOSS);
-        second.velocity = second.velocity.mult(1 - GAME_CONFIG.COLLISION_LOSS);
+        first.velocity = first.velocity.mult(1 - physicsConfig.collisionLoss);
+        second.velocity = second.velocity.mult(1 - physicsConfig.collisionLoss);
         
         return true;
     }
@@ -206,8 +220,8 @@ export class GameWorld {
                 
                 if(collided){
                     const force: number = firstBall.velocity.length + secondBall.velocity.length
-                    const volume: number = mapRange(force, 0, GAME_CONFIG.MAX_BALL_EXPECTED_COLLISION_FORCE, 0, 1);
-                    Assets.playSound(GAME_CONFIG.SOUNDS.BALLS_COLLIDE, volume);
+                    const volume: number = mapRange(force, 0, ballConfig.maxExpectedCollisionForce, 0, 1);
+                    Assets.playSound(sounds.paths.ballsCollide, volume);
 
                     if(!this._turnState.firstCollidedBallColor) {
                         const color: Color = firstBall.color === Color.white ? secondBall.color : firstBall.color;
@@ -219,8 +233,8 @@ export class GameWorld {
     }
 
     private isInsidePocket(position: Vector2): boolean {
-        return GAME_CONFIG.POCKETS_POSITIONS
-            .some((pocketPos: Vector2) => position.distFrom(pocketPos) <= GAME_CONFIG.POCKET_RADIUS);
+        return tableConfig.pocketsPositions
+            .some((pocketPos: Vector2) => position.distFrom(pocketPos) <= tableConfig.pocketRadius);
 
     }
 
@@ -239,7 +253,7 @@ export class GameWorld {
         this._balls.forEach((ball: Ball) => {
             this.resolveBallInPocket(ball);
             if (!ball.visible && !this._turnState.pocketedBalls.includes(ball)) {
-                Assets.playSound(GAME_CONFIG.SOUNDS.RAIL, 1);
+                Assets.playSound(sounds.paths.rail, 1);
                 if(!this.currentPlayer.color && this.isValidPlayerColor(ball.color)) {
                     this.currentPlayer.color = ball.color;
                     this.nextPlayer.color = ball.color === Color.yellow ? Color.red : Color.yellow;
@@ -251,7 +265,7 @@ export class GameWorld {
 
     private handleBallInHand(): void {
 
-        if(Mouse.isPressed(GAME_CONFIG.PLACE_BALL_IN_HAND_MOUSE_BUTTON) && this.isValidPosToPlaceCueBall(Mouse.position)) {
+        if(Mouse.isPressed(inputConfig.mousePlaceBallButton) && this.isValidPosToPlaceCueBall(Mouse.position)) {
             this.placeBallInHand(Mouse.position);
         }
         else {
@@ -281,7 +295,7 @@ export class GameWorld {
         }
 
         if(!this._cueBall.visible){
-            this._cueBall.show(Vector2.copy(GAME_CONFIG.CUE_BALL_POSITION));
+            this._cueBall.show(Vector2.copy(GameConfig.cueBallPosition));
         }
 
         if(foul || this._turnState.pocketedBalls.length === 0) {
@@ -302,19 +316,19 @@ export class GameWorld {
     private drawCurrentPlayerLabel(): void {
         
         Canvas2D.drawText(
-            GAME_CONFIG.CURRENT_PLAYER_LABEL + (this._currentPlayerIndex + 1), 
-            GAME_CONFIG.CURRENT_PLAYER_LABEL_FONT, 
-            GAME_CONFIG.CURRENT_PLAYER_LABEL_COLOR, 
-            GAME_CONFIG.CURRENT_PLAYER_LABEL_POSITION, 
-            GAME_CONFIG.CURRENT_PLAYER_LABEL_ALIGNMENT
+            labelsConfig.currentPlayer.text + (this._currentPlayerIndex + 1), 
+            labelsConfig.currentPlayer.font, 
+            labelsConfig.currentPlayer.color, 
+            labelsConfig.currentPlayer.position, 
+            labelsConfig.currentPlayer.alignment
             );
     }
 
     private drawMatchScores(): void {
         for(let i = 0 ; i < this._players.length ; i++){    
             for(let j = 0 ; j < this._players[i].matchScore ; j++){
-                const scorePosition: Vector2 = Vector2.copy(GAME_CONFIG.MATCH_SCORE_POSITIONS[i]).addToX(j * GAME_CONFIG.MATCH_SCORE_MARGIN);
-                const scoreSprite: HTMLImageElement = this._players[i].color === Color.red ? Assets.getSprite(GAME_CONFIG.SPRITES.RED_SCORE) : Assets.getSprite(GAME_CONFIG.SPRITES.YELLOW_SCORE);
+                const scorePosition: Vector2 = Vector2.copy(matchScoreConfig.scoresPositions[i]).addToX(j * matchScoreConfig.unitMargin);
+                const scoreSprite: HTMLImageElement = this._players[i].color === Color.red ? Assets.getSprite(sprites.paths.redScore) : Assets.getSprite(sprites.paths.yellowScore);
                 Canvas2D.drawImage(scoreSprite, scorePosition);
             }
         }    
@@ -324,10 +338,10 @@ export class GameWorld {
         for(let i = 0 ; i < this._players.length ; i++){ 
             Canvas2D.drawText(
                 this._players[i].overallScore.toString(), 
-                GAME_CONFIG.OVERALL_SCORE_LABEL_FONT,
-                GAME_CONFIG.OVERALL_SCORE_LABEL_COLOR,
-                GAME_CONFIG.OVERALL_SCORE_LABELS_POSITIONS[i],
-                GAME_CONFIG.OVERALL_SCORE_LABEL_ALIGNMENT
+                labelsConfig.overalScores[i].font,
+                labelsConfig.overalScores[i].color,
+                labelsConfig.overalScores[i].position,
+                labelsConfig.overalScores[i].alignment
                 );   
         }
     }
@@ -343,24 +357,24 @@ export class GameWorld {
     }
 
     private isAITurn(): boolean {
-        return AI.finishedSession && GAME_CONFIG.AI_ON && this._currentPlayerIndex === GAME_CONFIG.AI_PLAYER_INDEX;
+        return AI.finishedSession && aiConfig.on && this._currentPlayerIndex === aiConfig.playerIndex;
     }
 
     //------Public Methods------//
 
     public initMatch(): void {
 
-        const redBalls: Ball[] = GAME_CONFIG.RED_BALLS_POSITIONS
+        const redBalls: Ball[] = GameConfig.redBallsPositions
             .map((position: Vector2) => new Ball(Vector2.copy(position), Color.yellow));
 
-        const yellowBalls: Ball[] = GAME_CONFIG.YELLOW_BALLS_POSITIONS
+        const yellowBalls: Ball[] = GameConfig.yellowBallsPositions
             .map((position: Vector2) => new Ball(Vector2.copy(position), Color.red));
         
-        this._8Ball = new Ball(Vector2.copy(GAME_CONFIG.EIGHT_BALL_POSITION), Color.black);
+        this._8Ball = new Ball(Vector2.copy(GameConfig.eightBallPosition), Color.black);
 
-        this._cueBall = new Ball(Vector2.copy(GAME_CONFIG.CUE_BALL_POSITION), Color.white);
+        this._cueBall = new Ball(Vector2.copy(GameConfig.cueBallPosition), Color.white);
 
-        this._stick = new Stick(Vector2.copy(GAME_CONFIG.CUE_BALL_POSITION));
+        this._stick = new Stick(Vector2.copy(GameConfig.cueBallPosition));
 
         this._balls = [
             ...redBalls, 
@@ -386,7 +400,7 @@ export class GameWorld {
     public isValidPosToPlaceCueBall(position: Vector2): boolean {
         let noOverlap: boolean =  this._balls.every((ball: Ball) => {
             return ball.color === Color.white || 
-                   ball.position.distFrom(position) > GAME_CONFIG.BALL_DIAMETER;
+                   ball.position.distFrom(position) > ballConfig.diameter;
         })
 
         return noOverlap && this.isInsideTableBoundaries(position);
@@ -424,7 +438,7 @@ export class GameWorld {
             this._stick.shoot();
             this._cueBall.shoot(power, rotation);
             this._stick.movable = false;
-            setTimeout(() => this._stick.hide(), GAME_CONFIG.TIMEOUT_TO_HIDE_STICK_AFTER_SHOT);
+            setTimeout(() => this._stick.hide(), GameConfig.timeoutToHideStickAfterShot);
         }
     }
 
@@ -448,7 +462,7 @@ export class GameWorld {
     }
 
     public draw(): void {
-        Canvas2D.drawImage(Assets.getSprite(GAME_CONFIG.SPRITES.TABLE));
+        Canvas2D.drawImage(Assets.getSprite(sprites.paths.table));
         this.drawCurrentPlayerLabel();
         this.drawMatchScores();
         this.drawOverallScores();

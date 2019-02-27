@@ -1,17 +1,27 @@
+import { IMenuConfig, IButton, ILabel, ICursorConfig, IAssetsConfig } from './../game.config.type';
 import { IMenuCommand } from './commands/menu-command';
 import { MenuButton } from './menu-button';
 import { Assets } from '../assets';
 import { Canvas2D } from '../canvas';
-import { GAME_CONFIG } from '../game.config';
+import { GameConfig } from '../game.config';
 import { MenuActionType } from './menu-action-type';
 import { MenuLabel } from './menu-label';
 
+//------Configurations------//
+
+const cursorConfig: ICursorConfig = GameConfig.cursor;
+const sprites: IAssetsConfig = GameConfig.sprites;
+
 export class Menu {
+
+    //------Members------//
 
     private _labels: MenuLabel[];
     private _buttons: MenuButton[]
     private _active: boolean;
     private _subMenus: Menu[]
+
+    //------Properties------//
 
     public set active(value: boolean) {
         this._active = value;
@@ -21,8 +31,10 @@ export class Menu {
         return this._active;
     }
 
-    public init(actionsMap: Map<MenuActionType, IMenuCommand>, config: any): void {
-        this._buttons = config.BUTTONS.map((button: any) => {
+    //------Public Methods------//
+
+    public init(actionsMap: Map<MenuActionType, IMenuCommand>, config: IMenuConfig): void {
+        this._buttons = config.buttons.map((button: IButton) => {
             return new MenuButton(
                     actionsMap.get(button.action),
                     button.value,
@@ -32,7 +44,7 @@ export class Menu {
                 );
         });
 
-        this._labels = config.LABELS.map((label: any) => {
+        this._labels = config.labels.map((label: ILabel) => {
             return new MenuLabel(
                     label.text, 
                     label.position, 
@@ -42,7 +54,7 @@ export class Menu {
                 );
         });
 
-        this._subMenus = config.SUB_MENUS.map((menu: any) => {
+        this._subMenus = config.subMenus.map((menu: IMenuConfig) => {
             const subMenu = new Menu();
             subMenu.init(actionsMap, menu);
             return subMenu;
@@ -63,8 +75,8 @@ export class Menu {
 
     public draw(): void {
         if(this._active){
-            Canvas2D.changeCursor(GAME_CONFIG.DEFAULT_CURSOR);
-            Canvas2D.drawImage(Assets.getSprite(GAME_CONFIG.SPRITES.MAIN_MENU_BACKGROUND))
+            Canvas2D.changeCursor(cursorConfig.default);
+            Canvas2D.drawImage(Assets.getSprite(sprites.paths.menuBackground))
             this._labels.forEach((label: MenuLabel) => label.draw());
             this._buttons.forEach((button: MenuButton) => button.draw());
         }

@@ -1,8 +1,13 @@
-import { GAME_CONFIG } from '../game.config';
+import { IBallConfig, IPhysicsConfig, IAssetsConfig } from './../game.config.type';
+import { GameConfig } from '../game.config';
 import { Canvas2D } from '../canvas';
 import { Color } from '../common/color';
 import { Vector2 } from '../geom/vector2';
 import { Assets } from '../assets';
+
+const physicsConfig: IPhysicsConfig = GameConfig.physics;
+const sprites: IAssetsConfig = GameConfig.sprites;
+const ballConfig: IBallConfig = GameConfig.ball;
 
 export class Ball {
 
@@ -26,7 +31,7 @@ export class Ball {
     }
 
     public get nextPosition(): Vector2 {
-        return this.position.add(this._velocity.mult(1 - GAME_CONFIG.FRICTION));
+        return this.position.add(this._velocity.mult(1 - physicsConfig.friction));
     }
 
     public get velocity(): Vector2 {
@@ -62,19 +67,19 @@ export class Ball {
     private resolveSprite(color: Color) {
         switch(color) {
             case Color.white:
-                this._sprite = Assets.getSprite(GAME_CONFIG.SPRITES.CUE_BALL);
+                this._sprite = Assets.getSprite(sprites.paths.cueBall);
                 break;
 
             case Color.black:
-                this._sprite = Assets.getSprite(GAME_CONFIG.SPRITES.BLACK_BALL);
+                this._sprite = Assets.getSprite(sprites.paths.blackBall);
                 break;
 
             case Color.red:
-                this._sprite = Assets.getSprite(GAME_CONFIG.SPRITES.RED_BALL);
+                this._sprite = Assets.getSprite(sprites.paths.redBall);
                 break;
 
             case Color.yellow:
-                this._sprite = Assets.getSprite(GAME_CONFIG.SPRITES.YELLOW_BALL);
+                this._sprite = Assets.getSprite(sprites.paths.yellowBall);
                 break;
         }
     }
@@ -100,10 +105,10 @@ export class Ball {
 
     public update(): void {
         if(this._moving) {
-            this._velocity.multBy(1 - GAME_CONFIG.FRICTION);
+            this._velocity.multBy(1 - physicsConfig.friction);
             this._position.addTo(this._velocity);
 
-            if(this._velocity.length < GAME_CONFIG.BALL_MIN_VELOCITY_LENGTH) {
+            if(this._velocity.length < ballConfig.minVelocityLength) {
                 this.velocity = Vector2.zero;
                 this._moving = false;
             }
@@ -112,7 +117,7 @@ export class Ball {
 
     public draw(): void {
         if(this._visible){
-            Canvas2D.drawImage(this._sprite, this._position, 0, GAME_CONFIG.BALL_ORIGIN);
+            Canvas2D.drawImage(this._sprite, this._position, 0, ballConfig.origin);
         }
     }
 }

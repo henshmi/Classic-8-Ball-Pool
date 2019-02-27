@@ -5,7 +5,7 @@ import { ToggleSoundCommand } from './menu/commands/toggle-sound-command';
 import { PVCCommand } from './menu/commands/pvc-command';
 import { PVPCommand } from './menu/commands/pvp-command';
 import { IMenuCommand } from './menu/commands/menu-command';
-import { GAME_CONFIG } from './game.config';
+import { GameConfig } from './game.config';
 import { MenuActionType } from './menu/menu-action-type';
 import { Menu } from './menu/menu';
 import { Assets } from './assets';
@@ -13,6 +13,12 @@ import { GameWorld } from './game-objects/game-world';
 import { Keyboard } from './input/keyboard';
 import { Canvas2D } from './canvas';
 import { Mouse } from './input/mouse';
+import { IAssetsConfig, IInputConfig } from './game.config.type';
+
+//------Configurations------//
+
+const sprites: IAssetsConfig = GameConfig.sprites;
+const inputConfig: IInputConfig = GameConfig.input;
 
 export class Game {
     private _menuActionsMap: Map<MenuActionType, IMenuCommand>;
@@ -32,7 +38,7 @@ export class Game {
     }
 
     private initMainMenu(): void {
-        this._menu.init(this._menuActionsMap, GAME_CONFIG.MAIN_MENU_CONFIG);
+        this._menu.init(this._menuActionsMap, GameConfig.mainMenu);
     }
 
     public async init(): Promise<void> {
@@ -53,7 +59,7 @@ export class Game {
             }
             this._menu = this._menu.getSubMenu(index);
             this._menu.active = true;   
-        }, GAME_CONFIG.TIMEOUT_TO_LOAD_SUBMENU);
+        }, GameConfig.timeoutToLoadSubMenu);
     }
     
     public goToPreviousMenu(): void {
@@ -62,7 +68,7 @@ export class Game {
                 this._menu.active = false;
                 this._menu = this._previousMenus.pop();
                 this._menu.active = true; 
-            }, GAME_CONFIG.TIMEOUT_TO_LOAD_SUBMENU);
+            }, GameConfig.timeoutToLoadSubMenu);
         }
     }
 
@@ -80,18 +86,18 @@ export class Game {
             this._isLoading = true;
             Canvas2D.clear();
             Canvas2D.drawImage(
-                Assets.getSprite(GAME_CONFIG.SPRITES.CONTROLS),
-                GAME_CONFIG.LOADING_SCREEN_IMAGE_POSITION
+                Assets.getSprite(sprites.paths.controls),
+                GameConfig.loadingScreenImagePosition
                 );
             setTimeout(() => {
                 this._isLoading = false;
                 resolve();
-            }, GAME_CONFIG.LOADING_SCREEN_TIMEOUT);
+            }, GameConfig.loadingScreenTimeout);
         });
     }
 
     private handleInput(): void {
-        if(this._inGame && Keyboard.isPressed(GAME_CONFIG.BACK_TO_MENU_KEY)) {
+        if(this._inGame && Keyboard.isPressed(inputConfig.toggleMenuKey)) {
             if(this._menu.active) {
                 this._menu.active = false;
             }
@@ -130,5 +136,3 @@ export class Game {
 
 const game = new Game();
 game.init();
-
-               

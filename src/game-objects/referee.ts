@@ -5,6 +5,8 @@ import { Player } from "./player";
 
 export class Referee {
 
+    //------Private Methods------//
+
     private isValidFirstTouch(player: Player, collidedBallColor: Color, somePocketed: boolean): boolean {
 
         if(!collidedBallColor) {
@@ -39,6 +41,8 @@ export class Referee {
         }
     }
     
+    //------Public Methods------//
+
     public isValidTurn(player: Player, state: State): boolean {
         return this.isValidFirstTouch(player, state.firstCollidedBallColor, state.pocketedBalls.length > 0) &&
                this.isValidPocketedBalls(player, state.pocketedBalls);

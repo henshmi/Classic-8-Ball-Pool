@@ -4,12 +4,18 @@ import { Vector2 } from '../geom/vector2';
 
 class Mouse_Singleton {
 
+    //------Members------//
+
     private _buttonStates: ButtonState[] = [];
     private _position: Vector2;
+
+    //------Properties------//
 
     public get position() {
         return Vector2.copy(this._position);
     }
+
+    //------Constructor------//
 
     constructor() {
 
@@ -23,6 +29,8 @@ class Mouse_Singleton {
         document.addEventListener('mousedown', (event) => this.handleMouseDown(event));
         document.addEventListener('mouseup', (event) => this.handleMouseUp(event));
     }
+
+    //------Private Methods------//
 
     private handleMouseMove(event: MouseEvent): void {
         const mouseX: number = (event.pageX - Canvas2D.offsetX) / Canvas2D.scaleX;
@@ -38,6 +46,8 @@ class Mouse_Singleton {
     private handleMouseUp(event: MouseEvent) {
         this._buttonStates[event.button].down = false;
     }
+
+    //------Public Methods------//
 
     public reset() : void {
         for(let i = 0 ; i < 3 ; i++ ) {
