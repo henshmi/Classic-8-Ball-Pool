@@ -1,6 +1,6 @@
 # Classic 8-Ball Pool
 
-**Web-based 8-Ball Pool Game**  
+**A web-based 8-ball pool game**  
 A Typescript adaptation of [Classic Pool Game](https://github.com/henshmi/Classic-Pool-Game).
 
 ### Reviews
