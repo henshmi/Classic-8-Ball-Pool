@@ -14,7 +14,7 @@
     "webpack": "^4.29.3",
     "webpack-cli": "^3.2.3",
     "@types/lodash": "^4.14.137",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.19"
   },
   "dependencies": {}
 }
